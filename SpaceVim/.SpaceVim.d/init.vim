@@ -5,25 +5,37 @@ let g:spacevim_statusline_inactive_separator = 'bar'
 let g:spacevim_buffer_index_type = 4
 let g:spacevim_enable_tabline_filetype_icon = 0
 
-"定义vimfiler位置 topleft or rightbelow
-let g:vimfiler_direction = 'topleft'
-"自动切换到编辑文件的目录
-let g:vimfiler_enable_auto_cd = 1
+"加载 php layer
+call SpaceVim#layers#load("lang#php","lang#markdown")
 
-"call dein#vimfiler#custom#profile('default', 'context', {
-"      \ 'direction' : 'topleft',
-"      \ 'enable_auto_cd' : 1
-"      \ })
+"日志只记录错误和警告 1.全部 2.警告和错误 3错误
+call SpaceVim#logger#setLevel(2)
 
 "修改默认插件管理器
 "let g:spacevim_plugin_manager = 'vim-plug'
 
+"github用户名，用于获取收藏的库
+let g:spacevim_github_username = "shenlin9"
 "禁用  powerline 字体，因为没装
 let g:spacevim_enable_powerline_fonts = 0
 "定义字体，SpaceVim 的默认字体没有安装会报错
 let g:spacevim_guifont = 'DejaVu\ Sans\ Mono:h10:w6'
 "定义帮助语言
 let g:spacevim_vim_help_language = 'chinese'
+
+"================================================================
+"
+"定义vimfiler位置 topleft or rightbelow
+let g:vimfiler_direction = 'topleft'
+"自动切换到编辑文件的目录
+let g:vimfiler_enable_auto_cd = 1
+
+"call VimFiler#custom#profile('default', 'context', {
+"      \ 'direction' : 'topleft',
+"      \ 'enable_auto_cd' : 1
+"      \ })
+"
+"================================================================
 
 "不产生备份文件
 "set nobackup
@@ -60,3 +72,9 @@ cd d:\git\shenlin.ltd.git\source\_posts
 "普通模式和插入模式 Ctrl+Insert 也是复制
 :nmap <C-Insert> "*Y
 :imap <C-Insert> "*Y
+
+
+
+
+
+
