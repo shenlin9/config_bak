@@ -6,13 +6,16 @@ let g:spacevim_buffer_index_type = 4
 let g:spacevim_enable_tabline_filetype_icon = 0
 
 "加载 php layer
-call SpaceVim#layers#load("lang#php","lang#markdown")
-
-"日志只记录错误和警告 1.全部 2.警告和错误 3错误
-call SpaceVim#logger#setLevel(2)
+call SpaceVim#layers#load("lang#php","lang#markdown","ui")
 
 "修改默认插件管理器
 "let g:spacevim_plugin_manager = 'vim-plug'
+
+"禁用默认启用的插件
+let g:spacevim_disabled_plugins = ['vim-chat', 'lang#go']
+
+"日志只记录错误和警告 1.全部 2.警告和错误 3错误
+call SpaceVim#logger#setLevel(2)
 
 "github用户名，用于获取收藏的库
 let g:spacevim_github_username = "shenlin9"
@@ -22,7 +25,6 @@ let g:spacevim_enable_powerline_fonts = 0
 let g:spacevim_guifont = 'DejaVu\ Sans\ Mono:h10:w6'
 "定义帮助语言
 let g:spacevim_vim_help_language = 'chinese'
-
 "================================================================
 "
 "定义vimfiler位置 topleft or rightbelow
@@ -59,7 +61,8 @@ set fileencoding=utf8
 au GUIEnter * simalt ~x
 
 "切换到笔记目录
-cd d:\git\shenlin.ltd.git\source\_posts
+":VimFiler d:\git\shenlin.ltd.git\source\_posts
+"call vimfiler#set_execute_file('txt', 'notepad')
 
 "打开上次的文件
 "au VimLeave * mks! $HOME/Session.vim
