@@ -14,11 +14,11 @@ unalias=alias /d $1
 vi=vim $*
 cmderr=cd /d "%CMDER_ROOT%"
 
-ga=git add -A
+ga=git add -A $*
 gl=git log --oneline --all --graph --decorate  $*
-gs=git status
-gm=git commit -m
+gs=git status $*
+gm=git commit -m $*
 gma=git commit -am $*
-gf=git diff
-gsub=git submodule
-gck=git checkout
+gf=git diff $*
+gsub=git submodule $*
+gck=git checkout $*
