@@ -22,7 +22,7 @@ let g:spacevim_github_username = "shenlin9"
 "禁用  powerline 字体，因为没装
 let g:spacevim_enable_powerline_fonts = 0
 "定义字体，SpaceVim 的默认字体没有安装会报错
-let g:spacevim_guifont = 'DejaVu\ Sans\ Mono:h10:w6'
+let g:spacevim_guifont = 'DejaVu\ Sans\ Mono:h10:w5'
 "定义帮助语言
 let g:spacevim_vim_help_language = 'chinese'
 "================================================================
