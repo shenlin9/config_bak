@@ -31,7 +31,8 @@ let g:spacevim_vim_help_language = 'chinese'
 let g:vimfiler_direction = 'topleft'
 "自动切换到编辑文件的目录
 let g:vimfiler_enable_auto_cd = 1
-
+"设置 vimfiler 为系统默认的文件浏览器
+let g:vimfiler_as_default_explorer = 1
 "call VimFiler#custom#profile('default', 'context', {
 "      \ 'direction' : 'topleft',
 "      \ 'enable_auto_cd' : 1
@@ -46,8 +47,8 @@ let g:vimfiler_enable_auto_cd = 1
 "不产生swp临时文件
 "set noswapfile
 
-"可修改编码
-set ma
+"没有字节序标记Byte Order Mark 
+set nobomb
 "检测文件编码顺序
 set fileencodings=ucs-bom,utf-8,cp936,gb2312,gb18030,big5,euc-jp,euc-kr,latinl
 "设置vim终端显示编码
@@ -56,6 +57,10 @@ set termencoding=utf8
 set encoding=utf8
 "设置写入文件时编码
 set fileencoding=utf8
+
+"设置文件的换行格式
+set fileformats=unix,dos
+set fileformat=unix
 
 " 窗口启动时自动最大化
 au GUIEnter * simalt ~x
