@@ -4,8 +4,14 @@ DetectHiddenWindows,On
 SetTitleMatchMode, 2
 SetTitleMatchMode, Fast
 
+;---快捷键---
+; # Win
+; ! Alt 
+; ^ Control 
+; + Shift 
+
 ;---右 Win 键运行对话框---
-RWin::#r
+RWin:: #r
 
 ;---关闭显示器---
 F7::SendMessage,0x112,0xF170,2,,Program Manager
@@ -16,6 +22,7 @@ F7::SendMessage,0x112,0xF170,2,,Program Manager
                                                         ;-1：turn the monitor on
 
 ;---PotPlayer---
+;^1:: toggleWin("影音先锋")
 ^1:: toggleWin("PotPlayer")
 
 ; 自动暂停播放
@@ -143,10 +150,6 @@ moveWindow(Direct)
 ;
 ; ----------------------------------------------------------------------------
 ;
-; # Wind
-; ! Alt 
-; ^ Control 
-; + Shift 
 
 ;- 360安全浏览器 9.1
 ;360安全浏览器 9.1【无痕/小号浏览】

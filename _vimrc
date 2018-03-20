@@ -338,33 +338,37 @@ if v:lang =~? '^\(zh\)\|\(ja\)\|\(ko\)'
     set ambiwidth=double
 endif
 
-"高亮光标所在行
-set cursorline
-
 "高亮语法
 syntax enable
 
-"复制粘贴
-nmap <C-Insert> ^v$h"*y
-imap <C-Insert> <Esc>"*yyi
-
-"visual模式下按 * 直接搜索选中的字符，
-"但有个bug未处理，就是被搜索字符中不能包含 /
-vmap * <C-Insert>/<S-Insert><CR>
-
-"取消 ctrl + q 映射
-nmap <C-q> <Nop>
-
-"注释，还有多行注释问题
-nmap cm/ I// <Esc>
-nmap cm# I# <Esc>
+"禁止拼写检查
+set nospell
 
 "设置文件换行格式
 set ff=unix
 set ffs=unix,dos
 
+"高亮光标所在行
+set cursorline
+
+"设置文本自动换行宽度 textwidth
+set tw=80
+
+"设置列宽提示 ColorColumn，+1 表示高亮 textwidth 后面的一列
+set cc=+1
+
+"改变 ColorColumn 默认颜色
+"hi ColorColumn ctermbg=lightgrey guibg=lightgrey
+
+"设置自动换行选项 formatoptions，具体含义 help formatoptions, help fo-table
+set fo-=l
+set fo+=t
+set fo+=m
+set fo+=M
+
 "插入模式进入普通模式自动切换为英文输入法
 let g:input_toggle = 1
+
 function! Fcitx2en()
    let s:input_status = system("fcitx-remote")
    if s:input_status == 2
@@ -385,3 +389,19 @@ endfunction
 "set timeoutlen=150
 "autocmd InsertLeave * call Fcitx2en()
 "autocmd InsertEnter * call Fcitx2zh()
+
+"复制粘贴
+nmap <C-Insert> ^v$h"*y
+imap <C-Insert> <Esc>"*yyi
+
+"visual模式下按 * 直接搜索选中的字符，
+"但有个bug未处理，就是被搜索字符中不能包含 /
+vmap * <C-Insert>/<S-Insert><CR>
+
+"取消 ctrl + q 映射
+nmap <C-q> <Nop>
+
+"注释，还有多行注释问题
+nmap cm/ I// <Esc>
+nmap cm# I# <Esc>
+
