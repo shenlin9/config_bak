@@ -1,6 +1,6 @@
 #SingleInstance force
 
-DetectHiddenWindows,On
+DetectHiddenWindows, On
 SetTitleMatchMode, 2
 SetTitleMatchMode, Fast
 
@@ -11,15 +11,15 @@ SetTitleMatchMode, Fast
 ; + Shift 
 
 ;---右 Win 键运行对话框---
-RWin:: #r
+;RWin:: #r
 
 ;---关闭显示器---
 F7::SendMessage,0x112,0xF170,2,,Program Manager
-                                                ;0x112：WM_SYSCOMMAND，
-                                                ;0xF170：SC_MONITORPOWER，
-                                                        ;2：关闭。
-                                                        ;1：activate thedisplay's "low power" mode。
-                                                        ;-1：turn the monitor on
+                            ;0x112：WM_SYSCOMMAND，
+                            ;0xF170：SC_MONITORPOWER，
+                                    ;2：关闭。
+                                    ;1：activate thedisplay's "low power" mode。
+                                    ;-1：turn the monitor on
 
 ;---PotPlayer---
 ;^1:: toggleWin("影音先锋")
@@ -44,7 +44,7 @@ F7::SendMessage,0x112,0xF170,2,,Program Manager
 
 ;---firefox---
 ^q:: 
-IfWinExist, Mozilla Firefox （隐私浏览）            ;注意这里不要加双引号，否则判断出错
+IfWinExist, Mozilla Firefox （隐私浏览）    ;注意这里不要加双引号，否则判断出错
     toggleWin("Mozilla Firefox （隐私浏览）")
 else
     toggleWin("Mozilla Firefox")
@@ -95,12 +95,12 @@ show_all_win(win_title)
     }
 }
 
-;---显示隐藏有道词典迷你窗口---
-<^Up::
-<^Down::
-^!m
-ControlGetFocus, Edit1, ahk_class YdMiniModeWndClassName
-return
+;---显示隐藏有道词典迷你窗口(新版本词典老出错)---
+;<^Up::
+;<^Down::
+;^!m
+;ControlGetFocus, Edit1, ahk_class YdMiniModeWndClassName
+;return
 
 ;---有道词典迷你窗口活动时下列快捷键有效---
 #IfWinActive, ahk_class YdMiniModeWndClassName
@@ -112,6 +112,12 @@ return
 
     ;---发音---
     /::^!v
+#IfWinActive
+
+;---有道词典划词窗口活动时下列快捷键有效---
+#IfWinActive, YoudaoStrokeWnd
+    ;---加入/删除生词本---
+    d::^!s
 #IfWinActive
 
 ;---移动窗口函数---

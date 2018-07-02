@@ -400,6 +400,8 @@ vmap * <C-Insert>/<S-Insert><CR>
 
 "取消 ctrl + q 映射
 nmap <C-q> <Nop>
+nmap <C-Up> <Nop>
+nmap <C-Down> <Nop>
 
 "注释，还有多行注释问题
 nmap cm/ I// <Esc>
