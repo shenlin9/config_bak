@@ -10,6 +10,28 @@ SetTitleMatchMode, Fast
 ; ^ Control 
 ; + Shift 
 
+MButton::
+SoundGet, master_mute, , mute
+SoundSet, +1, , mute
+if (master_mute = "On")
+{
+    ;系统音量调节
+    ;Run,%windir%\System32\SndVol.exe -f 49825268
+
+    ;右下角的 thinkpad 音量调节
+    ControlClick, x2298 y33, ahk_class Shell_TrayWnd
+}
+else
+{
+    SoundSet, 10
+}
+return
+
+;WheelUp::msgbox,滚轮向上滚动
+;WheelDown::msgbox,滚轮向下滚动
+
+;Send {Volume_Up}
+
 ;---右 Win 键运行对话框---
 ;RWin:: #r
 
