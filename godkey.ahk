@@ -10,6 +10,66 @@ SetTitleMatchMode, Fast
 ; ^ Control 
 ; + Shift 
 
+;------速盘急速版破解，自动更改日期和开始下载--------
+
+;今天真实日期
+Today = %A_YYYY%/%A_MM%/%A_DD%
+
+;昨天的日期
+Yesterday  = %A_Now%   ;必须为 YYYYMMDDHH24MISS 格式才能使用下面的函数
+EnvAdd, Yesterday, -1, days
+FormatTime, Yesterday, %Yesterday%, ShortDate
+
+TheDate = %Today%
+
+SetDate()
+{
+    global
+
+    if (TheDate = Today)
+        TheDate = %Yesterday%
+    else
+        TheDate = %Today%
+
+    RunWait, %comspec% /c date %TheDate%,,Hide
+    return
+}
+
+DownLoad()
+{
+    SetDate()
+
+    Run,supan
+    WinWait,速盘 - 极速版
+    Sleep,100
+    Send {Click 650,123}
+    Send {Click 1493,239}
+    Send !{TAB}
+    Sleep,70000
+
+    IfWinExist,速盘 - 极速版
+    {
+        WinActivate
+        WinClose
+        Sleep,500
+        IfWinExist, Confirm
+            Send {Enter}
+        Sleep,1500
+        DownLoad()
+    }
+    return
+}
+
+^\::DownLoad()
+
+;WheelUp::msgbox,滚轮向上滚动
+;WheelDown::msgbox,滚轮向下滚动
+
+;四向滚轮
+WheelLeft::^+TAB
+WheelRight::^TAB
+
+;MButton::msgbox,滚轮点击
 MButton::
 SoundGet, master_mute, , mute
 SoundSet, +1, , mute
@@ -19,7 +79,7 @@ if (master_mute = "On")
     ;Run,%windir%\System32\SndVol.exe -f 49825268
 
     ;右下角的 thinkpad 音量调节
-    ControlClick, x2298 y33, ahk_class Shell_TrayWnd
+    ControlClick, x2145 y33, ahk_class Shell_TrayWnd
 }
 else
 {
@@ -27,45 +87,62 @@ else
 }
 return
 
-;WheelUp::msgbox,滚轮向上滚动
-;WheelDown::msgbox,滚轮向下滚动
-
-;Send {Volume_Up}
+;XButton1::msgbox,四键鼠标
+;XButton2::msgbox,五键鼠标
+XButton1::
+IfWinActive, ahk_class CabinetWClass
+    Send {Backspace}
+else
+    Send ^w
+return
+;XButton2::Backspace
+XButton2::^TAB
+;XButton2::^+TAB
 
 ;---右 Win 键运行对话框---
 ;RWin:: #r
+;^-::#e
 
 ;---关闭显示器---
-F7::SendMessage,0x112,0xF170,2,,Program Manager
-                            ;0x112：WM_SYSCOMMAND，
-                            ;0xF170：SC_MONITORPOWER，
-                                    ;2：关闭。
-                                    ;1：activate thedisplay's "low power" mode。
-                                    ;-1：turn the monitor on
+; Wait for it to be released because otherwise the hook state gets reset
+; while the key is down, which causes the up-event to get suppressed,
+; which in turn prevents toggling of the ScrollLock state/light:
+~ScrollLock::
+KeyWait, ScrollLock
+GetKeyState, ScrollLockState, ScrollLock, T
+If ScrollLockState = D
+{
+    RunWait, %comspec% /c powercfg /X -standby-timeout-ac 2,,Hide
+    ;RunWait, %comspec% /c powercfg /X -monitor-timeout-ac 2 && powercfg /X -standby-timeout-ac 2,,Hide
+    RunWait, rundll32.exe user32.dll`,LockWorkStation    ; 要运行的目标程序中有逗号则必须被转义
+    Sleep,500
+    SendMessage,0x112,0xF170,2,,Program Manager
+} else {
+    RunWait, %comspec% /c powercfg /X -standby-timeout-ac 60,,Hide
+}
+return
 
-;---PotPlayer---
-;^1:: toggleWin("影音先锋")
-^1:: toggleWin("PotPlayer")
+;SendMessage,0x112,0xF170,2,,Program Manager
+            ;0x112：WM_SYSCOMMAND，
+            ;0xF170：SC_MONITORPOWER，
+                    ;2：关闭。
+                    ;1：activate thedisplay's "low power" mode。
+                    ;-1：turn the monitor on
 
-; 自动暂停播放
-;if (i = 1 or i = "")
-;{
-;    send {Space}
-;    i := toggleWin("PotPlayer")
-;}
-;else if (i = -1)
-;{
-;    i := toggleWin("PotPlayer")
-;    send {Space}
-;}
-;return
+;---Chromium---
+^q:: toggleWin("- Google Chrome")
 
-;---vedit---
-^2:: toggleWin("Movavi Video Editor Plus")
+;---Total Commander---
+;^w:: toggleWin("Total Commander")
+
+;---Kodi---
+^1:: toggleWin("ahk_class Kodi")
+
+;---Premiere---
 ^4:: toggleWin("Adobe Premiere Pro CC 2018")
 
 ;---firefox---
-^q:: 
+^2:: 
 IfWinExist, Mozilla Firefox （隐私浏览）    ;注意这里不要加双引号，否则判断出错
     toggleWin("Mozilla Firefox （隐私浏览）")
 else
@@ -118,11 +195,19 @@ show_all_win(win_title)
 }
 
 ;---显示隐藏有道词典迷你窗口(新版本词典老出错)---
-;<^Up::
-;<^Down::
-;^!m
+<^Up::
+<^Down::^!x
 ;ControlGetFocus, Edit1, ahk_class YdMiniModeWndClassName
 ;return
+
+;---有道词典标准窗口活动时下列快捷键有效---
+#IfWinActive, ahk_class YodaoMainWndClass
+    Up::moveWindow("Up")
+    Down::moveWindow("Down")
+    Left::moveWindow("Left")
+    Right::moveWindow("Right")
+    /::^!v
+#IfWinActive
 
 ;---有道词典迷你窗口活动时下列快捷键有效---
 #IfWinActive, ahk_class YdMiniModeWndClassName
@@ -148,6 +233,8 @@ moveWindow(Direct)
     WinGetClass, class, A
 
     WinGetPos, x, y, Width, Height, ahk_class %class%
+    Width := 300
+    Height := 300
 
     if (Direct = "Up")
         y := y - Height

@@ -38,12 +38,13 @@ set nocompatible              " be iMproved, required
 filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
-"set rtp+=~/.vim/bundle/Vundle.vim
-"call vundle#begin()
+set rtp+=~/.vim/bundle/Vundle.vim
+set rtp+=~/.vim/
+call vundle#begin()
 
 " alternatively, pass a path where Vundle should install plugins
-set rtp+=$VIM/vimfiles/bundle/Vundle.vim/
-call vundle#begin('$VIM/vimfiles/bundle/')
+"set rtp+=$VIM/vimfiles/bundle/Vundle.vim/
+"call vundle#begin('$VIM/vimfiles/bundle/')
 
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
@@ -64,6 +65,42 @@ Plugin 'vim-airline/vim-airline-themes'
 Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
 "Plugin 'gabrielelana/vim-markdown'
+
+"折叠代码
+Plugin 'tmhedberg/SimpylFold'
+"自动缩进
+Plugin 'vim-scripts/indentpython.vim'
+"语法自动完成
+"Bundle 'Valloric/YouCompleteMe'
+"语法检查和高亮
+Plugin 'vim-syntastic/syntastic'
+"PEP 8 语法检测
+Plugin 'nvie/vim-flake8'
+
+"LaTex 公式
+"Plugin 'lervag/vimtex'
+"let g:tex_flavor='latex'
+"let g:vimtex_view_method='zathura'
+"let g:vimtex_quickfix_mode=0
+"set conceallevel=1
+"let g:tex_conceal='abdmg'
+
+" Track the engine.
+Plugin 'SirVer/ultisnips'
+
+" Snippets are separated from the engine. Add this if you want them:
+Plugin 'honza/vim-snippets'
+
+" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
+let g:UltiSnipsExpandTrigger="<tab>"
+"let g:UltiSnipsListSnippets="<c-tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
+
+let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/bundle/vim-snippets/UltiSnips', 'D:\git-repo\UltiSnips\']
 
 "tagbar
 "Plugin 'majutsushi/tagbar'
@@ -130,6 +167,11 @@ let g:airline#extensions#whitespace#enabled = 0
 " long:   overlong lines
 " trailing: trailing whitespace
 " mixed-indent-file: different indentation in different lines
+
+"--------------------YouCompleteMe--------------
+
+"let g:ycm_autoclose_preview_window_after_completion=1
+"map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 "--------------------vim-markdown--------------
 
@@ -307,8 +349,10 @@ endif
 
 "没有字节序标记 Byte Order Mark 
 set nobomb
-"显示行号
-set number
+"显示行号 number
+set nu
+" 启用相对行号 relativenumber
+set rnu
 "搜索不区分大小写
 set ic
 
@@ -339,7 +383,9 @@ if v:lang =~? '^\(zh\)\|\(ja\)\|\(ko\)'
 endif
 
 "高亮语法
-syntax enable
+"syntax enable
+let python_highlight_all=1
+syntax on
 
 "禁止拼写检查
 set nospell
@@ -407,3 +453,33 @@ nmap <C-Down> <Nop>
 nmap cm/ I// <Esc>
 nmap cm# I# <Esc>
 
+"中英文空格
+command Spa s/\v(\s?\w+\s?)/ \1 /g
+
+"Format Markdown
+"command Fmd s/“/ `/g|s/”/` /g|s/（/(/g|s/）/)/g|s/,/，/g|s/./。/g|s/;/；/g|s/' / `/g|s/ '/` /g
+command Fmd s/' / `/g|s/ '/` /g|s/“/ `/g|s/”/` /g|s/（/(/g|s/）/)/g|s/,/，/g|s/./。/g|s/;/；/g
+
+"Quote Uppercase
+command Quc s/\v (\u+)[ ,.]/ `\1` /g
+
+"Write Markdown
+"command Wmd w 文件名.md
+
+"折叠代码中的 class、function 等代码块
+set foldmethod=indent
+set foldlevel=99
+
+"更改折叠代码块默认的快捷键
+nnoremap <space> za
+
+" Virtualenv support
+"py3 << EOF
+"import os
+"import sys
+"if 'VIRTUAL_ENV' in os.environ:
+"  project_base_dir = os.environ['VIRTUAL_ENV']
+"  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+"  exec(compile(open(activate_this, "rb").read(), activate_this, 'exec'), dict(__file__=activate_this))
+"EOF
+"
