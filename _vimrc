@@ -39,7 +39,6 @@ filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
-set rtp+=~/.vim/
 call vundle#begin()
 
 " alternatively, pass a path where Vundle should install plugins
@@ -60,6 +59,17 @@ Plugin 'morhetz/gruvbox'
 "状态条
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+"let g:airline_powerline_fonts = 1
+let g:airline_theme='badwolf'
+
+let g:airline#extensions#tabline#enabled = 1
+"let g:airline#extensions#tabline#left_sep = ' '
+"let g:airline#extensions#tabline#left_alt_sep = '|'
+"let g:airline#extensions#tabline#formatter = 'default'
+
+"buffer 状态
+Plugin 'bling/vim-bufferline'
+
 
 "markdown 语法
 Plugin 'godlygeek/tabular'
@@ -67,15 +77,15 @@ Plugin 'plasticboy/vim-markdown'
 "Plugin 'gabrielelana/vim-markdown'
 
 "折叠代码
-Plugin 'tmhedberg/SimpylFold'
+"Plugin 'tmhedberg/SimpylFold'
 "自动缩进
-Plugin 'vim-scripts/indentpython.vim'
+"Plugin 'vim-scripts/indentpython.vim'
 "语法自动完成
 "Bundle 'Valloric/YouCompleteMe'
 "语法检查和高亮
-Plugin 'vim-syntastic/syntastic'
+"Plugin 'vim-syntastic/syntastic'
 "PEP 8 语法检测
-Plugin 'nvie/vim-flake8'
+"Plugin 'nvie/vim-flake8'
 
 "LaTex 公式
 "Plugin 'lervag/vimtex'
@@ -102,11 +112,23 @@ let g:UltiSnipsEditSplit="vertical"
 
 let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/bundle/vim-snippets/UltiSnips', 'D:\git-repo\UltiSnips\']
 
+" 缩进线
+Plugin 'Yggdroot/indentLine'
+
+" 自动格式化
+Plugin 'Chiel92/vim-autoformat'
+
+" 括号、引号等自动配对
+Plugin 'tpope/vim-surround'
+
+" nerdtree
+Plugin 'scrooloose/nerdtree'
+
+" 注释
+Plugin 'scrooloose/nerdcommenter'
+
 "tagbar
 "Plugin 'majutsushi/tagbar'
-
-"nerdtree
-"Plugin 'scrooloose/nerdtree'
 
 "ctrlp
 "Plugin 'ctrlpvim/ctrlp.vim'
@@ -327,6 +349,7 @@ if(g:iswindows==1)
 elseif has("unix")
     set guifont=Andale\ Mono\ 12
 endif
+"set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h12:w6
 
 "设置编码后重新加载菜单，否则菜单乱码
 if(g:iswindows==1)
@@ -482,4 +505,11 @@ nnoremap <space> za
 "  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
 "  exec(compile(open(activate_this, "rb").read(), activate_this, 'exec'), dict(__file__=activate_this))
 "EOF
-"
+
+" 启用命令行自动补全增强模式
+set wildmenu
+set wildmode=longest:list,full
+
+" 启用智能感知
+set omnifunc=syntaxcomplete#Complete
+" imap <silent> ` <C-X><C-O>

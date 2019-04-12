@@ -4,19 +4,19 @@ DetectHiddenWindows, On
 SetTitleMatchMode, 2
 SetTitleMatchMode, Fast
 
-;---¿ì½İ¼ü---
+;---å¿«æ·é”®---
 ; # Win
 ; ! Alt 
 ; ^ Control 
 ; + Shift 
 
-;------ËÙÅÌ¼±ËÙ°æÆÆ½â£¬×Ô¶¯¸ü¸ÄÈÕÆÚºÍ¿ªÊ¼ÏÂÔØ--------
+;------é€Ÿç›˜æ€¥é€Ÿç‰ˆç ´è§£ï¼Œè‡ªåŠ¨æ›´æ”¹æ—¥æœŸå’Œå¼€å§‹ä¸‹è½½--------
 
-;½ñÌìÕæÊµÈÕÆÚ
+;ä»Šå¤©çœŸå®æ—¥æœŸ
 Today = %A_YYYY%/%A_MM%/%A_DD%
 
-;×òÌìµÄÈÕÆÚ
-Yesterday  = %A_Now%   ;±ØĞëÎª YYYYMMDDHH24MISS ¸ñÊ½²ÅÄÜÊ¹ÓÃÏÂÃæµÄº¯Êı
+;æ˜¨å¤©çš„æ—¥æœŸ
+Yesterday  = %A_Now%   ;å¿…é¡»ä¸º YYYYMMDDHH24MISS æ ¼å¼æ‰èƒ½ä½¿ç”¨ä¸‹é¢çš„å‡½æ•°
 EnvAdd, Yesterday, -1, days
 FormatTime, Yesterday, %Yesterday%, ShortDate
 
@@ -40,14 +40,14 @@ DownLoad()
     SetDate()
 
     Run,supan
-    WinWait,ËÙÅÌ - ¼«ËÙ°æ
+    WinWait,é€Ÿç›˜ - æé€Ÿç‰ˆ
     Sleep,100
     Send {Click 650,123}
     Send {Click 1493,239}
     Send !{TAB}
     Sleep,70000
 
-    IfWinExist,ËÙÅÌ - ¼«ËÙ°æ
+    IfWinExist,é€Ÿç›˜ - æé€Ÿç‰ˆ
     {
         WinActivate
         WinClose
@@ -62,23 +62,29 @@ DownLoad()
 
 ^\::DownLoad()
 
-;WheelUp::msgbox,¹öÂÖÏòÉÏ¹ö¶¯
-;WheelDown::msgbox,¹öÂÖÏòÏÂ¹ö¶¯
+;Vim ä¸­ CapsLock å’Œ Ctrl+[ äº’æ¢
+#IfWinActive, ahk_class Vim
+    Capslock::^[
+    ;^[::Capslock
+#IfWinActive
 
-;ËÄÏò¹öÂÖ
+;WheelUp::msgbox,æ»šè½®å‘ä¸Šæ»šåŠ¨
+;WheelDown::msgbox,æ»šè½®å‘ä¸‹æ»šåŠ¨
+
+;å››å‘æ»šè½®
 WheelLeft::^+TAB
 WheelRight::^TAB
 
-;MButton::msgbox,¹öÂÖµã»÷
+;MButton::msgbox,æ»šè½®ç‚¹å‡»
 MButton::
 SoundGet, master_mute, , mute
 SoundSet, +1, , mute
 if (master_mute = "On")
 {
-    ;ÏµÍ³ÒôÁ¿µ÷½Ú
+    ;ç³»ç»ŸéŸ³é‡è°ƒèŠ‚
     ;Run,%windir%\System32\SndVol.exe -f 49825268
 
-    ;ÓÒÏÂ½ÇµÄ thinkpad ÒôÁ¿µ÷½Ú
+    ;å³ä¸‹è§’çš„ thinkpad éŸ³é‡è°ƒèŠ‚
     ControlClick, x2145 y33, ahk_class Shell_TrayWnd
 }
 else
@@ -87,8 +93,8 @@ else
 }
 return
 
-;XButton1::msgbox,ËÄ¼üÊó±ê
-;XButton2::msgbox,Îå¼üÊó±ê
+;XButton1::msgbox,å››é”®é¼ æ ‡
+;XButton2::msgbox,äº”é”®é¼ æ ‡
 XButton1::
 IfWinActive, ahk_class CabinetWClass
     Send {Backspace}
@@ -99,11 +105,11 @@ return
 XButton2::^TAB
 ;XButton2::^+TAB
 
-;---ÓÒ Win ¼üÔËĞĞ¶Ô»°¿ò---
+;---å³ Win é”®è¿è¡Œå¯¹è¯æ¡†---
 ;RWin:: #r
 ;^-::#e
 
-;---¹Ø±ÕÏÔÊ¾Æ÷---
+;---å…³é—­æ˜¾ç¤ºå™¨---
 ; Wait for it to be released because otherwise the hook state gets reset
 ; while the key is down, which causes the up-event to get suppressed,
 ; which in turn prevents toggling of the ScrollLock state/light:
@@ -114,7 +120,7 @@ If ScrollLockState = D
 {
     RunWait, %comspec% /c powercfg /X -standby-timeout-ac 2,,Hide
     ;RunWait, %comspec% /c powercfg /X -monitor-timeout-ac 2 && powercfg /X -standby-timeout-ac 2,,Hide
-    RunWait, rundll32.exe user32.dll`,LockWorkStation    ; ÒªÔËĞĞµÄÄ¿±ê³ÌĞòÖĞÓĞ¶ººÅÔò±ØĞë±»×ªÒå
+    RunWait, rundll32.exe user32.dll`,LockWorkStation    ; è¦è¿è¡Œçš„ç›®æ ‡ç¨‹åºä¸­æœ‰é€—å·åˆ™å¿…é¡»è¢«è½¬ä¹‰
     Sleep,500
     SendMessage,0x112,0xF170,2,,Program Manager
 } else {
@@ -123,11 +129,11 @@ If ScrollLockState = D
 return
 
 ;SendMessage,0x112,0xF170,2,,Program Manager
-            ;0x112£ºWM_SYSCOMMAND£¬
-            ;0xF170£ºSC_MONITORPOWER£¬
-                    ;2£º¹Ø±Õ¡£
-                    ;1£ºactivate thedisplay's "low power" mode¡£
-                    ;-1£ºturn the monitor on
+            ;0x112ï¼šWM_SYSCOMMANDï¼Œ
+            ;0xF170ï¼šSC_MONITORPOWERï¼Œ
+                    ;2ï¼šå…³é—­ã€‚
+                    ;1ï¼šactivate thedisplay's "low power" modeã€‚
+                    ;-1ï¼šturn the monitor on
 
 ;---Chromium---
 ^q:: toggleWin("- Google Chrome")
@@ -143,13 +149,13 @@ return
 
 ;---firefox---
 ^2:: 
-IfWinExist, Mozilla Firefox £¨ÒşË½ä¯ÀÀ£©    ;×¢ÒâÕâÀï²»Òª¼ÓË«ÒıºÅ£¬·ñÔòÅĞ¶Ï³ö´í
-    toggleWin("Mozilla Firefox £¨ÒşË½ä¯ÀÀ£©")
+IfWinExist, Mozilla Firefox ï¼ˆéšç§æµè§ˆï¼‰    ;æ³¨æ„è¿™é‡Œä¸è¦åŠ åŒå¼•å·ï¼Œå¦åˆ™åˆ¤æ–­å‡ºé”™
+    toggleWin("Mozilla Firefox ï¼ˆéšç§æµè§ˆï¼‰")
 else
     toggleWin("Mozilla Firefox")
 return
 
-;---Òş²ØÏÔÊ¾´°¿Ú---
+;---éšè—æ˜¾ç¤ºçª—å£---
 toggleWin(win_title)
 {
     IfWinNotExist, %win_title%
@@ -169,7 +175,7 @@ toggleWin(win_title)
     }
 }
 
-;---±éÀú´°¿Ú----
+;---éå†çª—å£----
 ;^9::show_all_win("ahk_class PotPlayer64")
 
 show_all_win(win_title)
@@ -194,13 +200,13 @@ show_all_win(win_title)
     }
 }
 
-;---ÏÔÊ¾Òş²ØÓĞµÀ´ÊµäÃÔÄã´°¿Ú(ĞÂ°æ±¾´ÊµäÀÏ³ö´í)---
+;---æ˜¾ç¤ºéšè—æœ‰é“è¯å…¸è¿·ä½ çª—å£(æ–°ç‰ˆæœ¬è¯å…¸è€å‡ºé”™)---
 <^Up::
 <^Down::^!x
 ;ControlGetFocus, Edit1, ahk_class YdMiniModeWndClassName
 ;return
 
-;---ÓĞµÀ´Êµä±ê×¼´°¿Ú»î¶¯Ê±ÏÂÁĞ¿ì½İ¼üÓĞĞ§---
+;---æœ‰é“è¯å…¸æ ‡å‡†çª—å£æ´»åŠ¨æ—¶ä¸‹åˆ—å¿«æ·é”®æœ‰æ•ˆ---
 #IfWinActive, ahk_class YodaoMainWndClass
     Up::moveWindow("Up")
     Down::moveWindow("Down")
@@ -209,25 +215,25 @@ show_all_win(win_title)
     /::^!v
 #IfWinActive
 
-;---ÓĞµÀ´ÊµäÃÔÄã´°¿Ú»î¶¯Ê±ÏÂÁĞ¿ì½İ¼üÓĞĞ§---
+;---æœ‰é“è¯å…¸è¿·ä½ çª—å£æ´»åŠ¨æ—¶ä¸‹åˆ—å¿«æ·é”®æœ‰æ•ˆ---
 #IfWinActive, ahk_class YdMiniModeWndClassName
-    ;---ÒÆ¶¯ÓĞµÀ´ÊµäÃÔÄã´°¿Ú---
+    ;---ç§»åŠ¨æœ‰é“è¯å…¸è¿·ä½ çª—å£---
     Up::moveWindow("Up")
     Down::moveWindow("Down")
     Left::moveWindow("Left")
     Right::moveWindow("Right")
 
-    ;---·¢Òô---
+    ;---å‘éŸ³---
     /::^!v
 #IfWinActive
 
-;---ÓĞµÀ´Êµä»®´Ê´°¿Ú»î¶¯Ê±ÏÂÁĞ¿ì½İ¼üÓĞĞ§---
+;---æœ‰é“è¯å…¸åˆ’è¯çª—å£æ´»åŠ¨æ—¶ä¸‹åˆ—å¿«æ·é”®æœ‰æ•ˆ---
 #IfWinActive, YoudaoStrokeWnd
-    ;---¼ÓÈë/É¾³ıÉú´Ê±¾---
+    ;---åŠ å…¥/åˆ é™¤ç”Ÿè¯æœ¬---
     d::^!s
 #IfWinActive
 
-;---ÒÆ¶¯´°¿Úº¯Êı---
+;---ç§»åŠ¨çª—å£å‡½æ•°---
 moveWindow(Direct)
 {
     WinGetClass, class, A
@@ -258,7 +264,7 @@ moveWindow(Direct)
 
     WinMove, ahk_class %class%, , x, y
 
-    ;ÒÆ¶¯µ¥´Ê²éÑ¯ÄÚÈİ´°¿Ú
+    ;ç§»åŠ¨å•è¯æŸ¥è¯¢å†…å®¹çª—å£
     WinMove, ahk_class YdMiniCefWnd, , x, y + Height
 }
 
@@ -266,10 +272,10 @@ moveWindow(Direct)
 ; ----------------------------------------------------------------------------
 ;
 
-;- 360°²È«ä¯ÀÀÆ÷ 9.1
-;360°²È«ä¯ÀÀÆ÷ 9.1¡¾ÎŞºÛ/Ğ¡ºÅä¯ÀÀ¡¿
+;- 360å®‰å…¨æµè§ˆå™¨ 9.1
+;360å®‰å…¨æµè§ˆå™¨ 9.1ã€æ— ç—•/å°å·æµè§ˆã€‘
 
-;---test£¬Ë«»÷ win ¼ü---
+;---testï¼ŒåŒå‡» win é”®---
 ;RWin::
 ;if (A_PriorHotkey = "RWin" and A_TimeSincePriorHotkey < 400)
 ;{
@@ -277,8 +283,8 @@ moveWindow(Direct)
 ;}
 ;return
 
-;---test£¬ÓÒ win ¼ü´úÌæÊó±êÓÒ¼ü---
+;---testï¼Œå³ win é”®ä»£æ›¿é¼ æ ‡å³é”®---
 ;RWin::AppsKey
 
-;---test£¬~ ·ûºÅ±íÊ¾²»Ó°Ïì°´¼üµÄÔ­À´¹¦ÄÜ ---
+;---testï¼Œ~ ç¬¦å·è¡¨ç¤ºä¸å½±å“æŒ‰é”®çš„åŸæ¥åŠŸèƒ½ ---
 ;~ScrollLock::msgbox,scroll lock ...
