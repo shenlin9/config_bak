@@ -41,17 +41,8 @@ filetype off                  " required
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-" alternatively, pass a path where Vundle should install plugins
-"set rtp+=$VIM/vimfiles/bundle/Vundle.vim/
-"call vundle#begin('$VIM/vimfiles/bundle/')
-
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
-
-" The following are examples of different formats supported.
-" Keep Plugin commands between vundle#begin/end.
-"-------------
-" plugin on GitHub repo
 
 "colorscheme
 Plugin 'morhetz/gruvbox'
@@ -106,14 +97,12 @@ let g:UltiSnipsExpandTrigger="<tab>"
 "let g:UltiSnipsListSnippets="<c-tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
-
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
+let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/bundle/vim-snippets/UltiSnips', $HOME.'/UltiSnips']
 
-let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/bundle/vim-snippets/UltiSnips', 'D:\git-repo\UltiSnips\']
-
-" 缩进线
-Plugin 'Yggdroot/indentLine'
+" 缩进线，目前和插入模式下的 ` 冲突
+"Plugin 'Yggdroot/indentLine'
 
 " 自动格式化
 Plugin 'Chiel92/vim-autoformat'
@@ -133,50 +122,10 @@ Plugin 'scrooloose/nerdcommenter'
 "ctrlp
 "Plugin 'ctrlpvim/ctrlp.vim'
 
-"JSON 语法
-"Plugin 'elzr/vim-json'
-
-"Plugin 'suan/vim-instant-markdown'
-
-"Plugin 'iamcco/mathjax-support-for-mkdp'
-"Plugin 'iamcco/markdown-preview.vim'
-
-"-------------
-" plugin from http://vim-scripts.org/vim/scripts.html
-" Plugin 'L9'
-" Git plugin not hosted on GitHub
-"Plugin 'git://git.wincent.com/command-t.git'
-
-"-------------
-" git repos on your local machine (i.e. when working on your own plugin)
-"Plugin 'file:///home/gmarik/path/to/plugin'
-
-
-"-------------
-" The sparkup vim script is in a subdirectory of this repo called vim.
-" Pass the path to set the runtimepath properly.
-"Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-
-"-------------
-" Install L9 and avoid a Naming conflict if you've already installed a
-" different version somewhere else.
-" Plugin 'ascenator/L9', {'name': 'newL9'}
-
-" All of your Plugins must be added before the following line
-
 call vundle#end()            " required
 
 filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
+
 " Put your non-Plugin stuff after this line
 
 "--------------------vim-airline--------------
@@ -219,16 +168,8 @@ let g:vim_markdown_frontmatter = 1
 "需要 https://github.com/cespare/vim-toml
 
 "文件后缀和编程语言的对应，例如
-"```asm  表示代码块使用 $VIM/syntax 目录下的语法文件 asm.vim
-"...
-"```
 "默认 `['c++=cpp', 'viml=vim', 'bash=sh', 'ini=dosini']`.
-let g:vim_markdown_fenced_languages = ['c=cpp', 'vim=vim', 'dos=dosini', 'asm=asm', 'bash=sh', 'javascript=javascript', 'php=php', 'sql=sql', 'mysql=mysql']
-
-"--------------------instant-markdown--------------
-
-"自动打开预览窗口
-"let g:instant_markdown_autostart = 0
+"let g:vim_markdown_fenced_languages = ['c=cpp', 'vim=vim', 'dos=dosini', 'asm=asm', 'bash=sh', 'javascript=javascript', 'php=php', 'sql=sql', 'mysql=mysql']
 
 "--------------------tagbar--------------------
 
@@ -345,7 +286,7 @@ endif
 
 "设置字体，字体中的空格要转义
 if(g:iswindows==1)
-    set guifont=DejaVu\ Sans\ Mono:h12:w6
+    set guifont=等距更纱黑体\ SC:h13:w6
 elseif has("unix")
     set guifont=Andale\ Mono\ 12
 endif
@@ -419,13 +360,12 @@ set ffs=unix,dos
 
 "高亮光标所在行
 set cursorline
+highlight Cursor guifg=white guibg=black
 
 "设置文本自动换行宽度 textwidth
 set tw=80
-
 "设置列宽提示 ColorColumn，+1 表示高亮 textwidth 后面的一列
 set cc=+1
-
 "改变 ColorColumn 默认颜色
 "hi ColorColumn ctermbg=lightgrey guibg=lightgrey
 
@@ -434,30 +374,6 @@ set fo-=l
 set fo+=t
 set fo+=m
 set fo+=M
-
-"插入模式进入普通模式自动切换为英文输入法
-let g:input_toggle = 1
-
-function! Fcitx2en()
-   let s:input_status = system("fcitx-remote")
-   if s:input_status == 2
-      let g:input_toggle = 1
-      let l:a = system("fcitx-remote -c")
-   endif
-endfunction
-
-"普通模式进入插入模式自动切换为中文输入法
-function! Fcitx2zh()
-   let s:input_status = system("fcitx-remote")
-   if s:input_status != 2 && g:input_toggle == 1
-      let l:a = system("fcitx-remote -o")
-      let g:input_toggle = 0
-   endif
-endfunction
-
-"set timeoutlen=150
-"autocmd InsertLeave * call Fcitx2en()
-"autocmd InsertEnter * call Fcitx2zh()
 
 "复制粘贴
 nmap <C-Insert> ^v$h"*y
@@ -513,3 +429,6 @@ set wildmode=longest:list,full
 " 启用智能感知
 set omnifunc=syntaxcomplete#Complete
 " imap <silent> ` <C-X><C-O>
+
+
+

@@ -4,24 +4,38 @@ DetectHiddenWindows, On
 SetTitleMatchMode, 2
 SetTitleMatchMode, Fast
 
-;---快捷键---
+;---功能键含义---
 ; # Win
 ; ! Alt 
 ; ^ Control 
 ; + Shift 
 
-;------速盘急速版破解，自动更改日期和开始下载--------
+;==============程序加载时根据当前代理状态更改图标===========
+ServerAddr := "127.0.0.1:1088"
 
-;今天真实日期
+OutputVar := ReadProxy()
+if (OutputVar = 1){
+    SetTrayIcon(ServerAddr)
+} else {
+    SetTrayIcon("")
+}
+
+;================创建内存盘文件夹=================
+Run, %comspec% /c mkdir "z:\TEMP" "z:\Chrome" "z:\Download" "z:\FireFox" "z:\INetCache" "z:\360 Browser",,Hide
+
+;================速盘急速版破解，自动更改日期和开始下载=================
+
+;------今天实际日期--------
 Today = %A_YYYY%/%A_MM%/%A_DD%
 
-;昨天的日期
+;------昨天的日期--------
 Yesterday  = %A_Now%   ;必须为 YYYYMMDDHH24MISS 格式才能使用下面的函数
 EnvAdd, Yesterday, -1, days
 FormatTime, Yesterday, %Yesterday%, ShortDate
 
 TheDate = %Today%
 
+;------设置系统日期--------
 SetDate()
 {
     global
@@ -35,6 +49,7 @@ SetDate()
     return
 }
 
+;------启动程序自动开始下载--------
 DownLoad()
 {
     SetDate()
@@ -62,54 +77,69 @@ DownLoad()
 
 ^\::DownLoad()
 
-;Vim 中 CapsLock 和 Ctrl+[ 互换
-#IfWinActive, ahk_class Vim
-    Capslock::^[
-    ;^[::Capslock
-#IfWinActive
+;=====================快速查看、禁用、启用 IE 代理==============================
 
-;WheelUp::msgbox,滚轮向上滚动
-;WheelDown::msgbox,滚轮向下滚动
-
-;四向滚轮
-WheelLeft::^+TAB
-WheelRight::^TAB
-
-;MButton::msgbox,滚轮点击
-MButton::
-SoundGet, master_mute, , mute
-SoundSet, +1, , mute
-if (master_mute = "On")
-{
-    ;系统音量调节
-    ;Run,%windir%\System32\SndVol.exe -f 49825268
-
-    ;右下角的 thinkpad 音量调节
-    ControlClick, x2145 y33, ahk_class Shell_TrayWnd
+;------读取 IE 代理--------
+ReadProxy() {
+    RegRead, OutputVar, HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\, ProxyEnable
+    Return OutputVar
 }
-else
-{
-    SoundSet, 10
+
+;------设置 IE 代理--------
+SetProxy(Server) {
+    Run, SetProxy.exe "%Server%", , Hide, OutputVarPID
 }
+
+;------设置托盘图标--------
+SetTrayIcon(Server) {
+    if (Server = ""){
+        Menu, Tray, Icon, Shell32.dll, 50
+        Menu, Tray, Tip , Direct Link
+    } else {
+        Menu, Tray, Icon, Shell32.dll, 42
+        Menu, Tray, Tip , Proxy Server : %Server%
+    }
+}
+
+;------快捷键切换代理状态--------
+F10::
+; 检测热键的单次, 两次和三次按下. 这样允许热键根据您按下次数的多少
+; 执行不同的操作：
+if winc_presses > 0 ; SetTimer 已经启动, 所以我们记录键击.
+{
+    winc_presses += 1
+    return
+}
+; 否则, 这是新开始系列中的首次按下. 把次数设为 1 并启动计时器：
+winc_presses = 1
+SetTimer, KeyWinC, 300 ; 在 300 毫秒内等待更多的键击.
 return
 
-;XButton1::msgbox,四键鼠标
-;XButton2::msgbox,五键鼠标
-XButton1::
-IfWinActive, ahk_class CabinetWClass
-    Send {Backspace}
-else
-    Send ^w
+KeyWinC:
+SetTimer, KeyWinC, off
+if winc_presses = 1 ; 此键按下了一次.
+{
+    OutputVar := ReadProxy()
+    if (OutputVar = 1){
+        SetProxy("")
+        SetTrayIcon("")
+    } else {
+        SetProxy(ServerAddr)
+        SetTrayIcon(ServerAddr)
+    }
+}
+else if winc_presses >= 2 ; 此键按下至少两次.
+{
+    Run,rundll32.exe shell32.dll`, Control_RunDLL inetcpl.cpl`, `,4L
+    Sleep,200
+    Send !l
+}
+; 不论触发了上面的哪个动作, 都对 count 进行重置
+; 为下一个系列的按下做准备:
+winc_presses = 0
 return
-;XButton2::Backspace
-XButton2::^TAB
-;XButton2::^+TAB
 
-;---右 Win 键运行对话框---
-;RWin:: #r
-;^-::#e
-
-;---关闭显示器---
+;============================关闭、打开显示器并设定休眠时间====================
 ; Wait for it to be released because otherwise the hook state gets reset
 ; while the key is down, which causes the up-event to get suppressed,
 ; which in turn prevents toggling of the ScrollLock state/light:
@@ -135,17 +165,26 @@ return
                     ;1：activate thedisplay's "low power" mode。
                     ;-1：turn the monitor on
 
+;======================按键重映射==========================
+
+;---Capslock和ESC互换---
+Capslock::ESC
+ESC::Capslock
+
+;---右 Win 键运行对话框---
+;RWin:: #r
+;^-::#e
+
+;======================隐藏显示窗口==========================
+
 ;---Chromium---
 ^q:: toggleWin("- Google Chrome")
-
-;---Total Commander---
-;^w:: toggleWin("Total Commander")
 
 ;---Kodi---
 ^1:: toggleWin("ahk_class Kodi")
 
-;---Premiere---
-^4:: toggleWin("Adobe Premiere Pro CC 2018")
+;---VSDC Video Editor---
+^4:: toggleWin("VSDC Video Editor")
 
 ;---firefox---
 ^2:: 
@@ -175,32 +214,9 @@ toggleWin(win_title)
     }
 }
 
-;---遍历窗口----
-;^9::show_all_win("ahk_class PotPlayer64")
+;===============================有道词典=====================================
 
-show_all_win(win_title)
-{
-    DetectHiddenWindows,On
-    WinGet, id, list, %win_title%
-    Loop, %id%
-    {
-        this_id := id%A_Index%
-        WinGetTitle, this_title, ahk_id %this_id%
-        WinGetClass, this_class, ahk_id %this_id%
-        MsgBox, 4, , Visiting All Windows`n%a_index% of %id%`nahk_id %this_id%`nahk_class %this_class%`n%this_title%`n`nContinue?
-        IfMsgBox, NO, break
-
-        ;if (this_title != "Video Editor Plus")
-        ;    WinShow, ahk_id %this_id%
-        ;else
-        ;{
-        ;    WinHide, ahk_id %this_id%
-        ;    Send !{TAB}
-        ;}
-    }
-}
-
-;---显示隐藏有道词典迷你窗口(新版本词典老出错)---
+;---显示隐藏有道词典窗口---
 <^Up::
 <^Down::^!x
 ;ControlGetFocus, Edit1, ahk_class YdMiniModeWndClassName
@@ -268,23 +284,3 @@ moveWindow(Direct)
     WinMove, ahk_class YdMiniCefWnd, , x, y + Height
 }
 
-;
-; ----------------------------------------------------------------------------
-;
-
-;- 360安全浏览器 9.1
-;360安全浏览器 9.1【无痕/小号浏览】
-
-;---test，双击 win 键---
-;RWin::
-;if (A_PriorHotkey = "RWin" and A_TimeSincePriorHotkey < 400)
-;{
-;    send #r
-;}
-;return
-
-;---test，右 win 键代替鼠标右键---
-;RWin::AppsKey
-
-;---test，~ 符号表示不影响按键的原来功能 ---
-;~ScrollLock::msgbox,scroll lock ...
