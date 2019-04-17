@@ -92,11 +92,13 @@ SetProxy(Server) {
 
 ;------设置托盘图标--------
 SetTrayIcon(Server) {
+    Menu, Tray, Icon        ; 显示托盘图标
+    ;Menu, Tray, NoIcon     ; 隐藏托盘图标
     if (Server = ""){
-        Menu, Tray, Icon, Shell32.dll, 50
+        Menu, Tray, Icon, DirectLink.ico
         Menu, Tray, Tip , Direct Link
     } else {
-        Menu, Tray, Icon, Shell32.dll, 42
+        Menu, Tray, Icon, ProxyLink.ico
         Menu, Tray, Tip , Proxy Server : %Server%
     }
 }

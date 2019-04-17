@@ -286,7 +286,8 @@ endif
 
 "设置字体，字体中的空格要转义
 if(g:iswindows==1)
-    set guifont=等距更纱黑体\ SC:h13:w6
+    "set guifont=等距更纱黑体\ SC:h13:w6
+    set guifont=DejaVu\ Sans\ Mono:h13:w6
 elseif has("unix")
     set guifont=Andale\ Mono\ 12
 endif
