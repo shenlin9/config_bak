@@ -81,7 +81,8 @@ DownLoad()
 
 ;------读取 IE 代理--------
 ReadProxy() {
-    RegRead, OutputVar, HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\, ProxyEnable
+    ;RegRead, OutputVar, HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\, ProxyEnable
+    RegRead, OutputVar, HKEY_USERS\S-1-5-21-2649311137-1019525462-828708016-1001\Software\Microsoft\Windows\CurrentVersion\Internet Settings, ProxyEnable
     Return OutputVar
 }
 
@@ -92,7 +93,6 @@ SetProxy(Server) {
 
 ;------设置托盘图标--------
 SetTrayIcon(Server) {
-    Menu, Tray, Icon        ; 显示托盘图标
     ;Menu, Tray, NoIcon     ; 隐藏托盘图标
     if (Server = ""){
         Menu, Tray, Icon, DirectLink.ico
@@ -101,6 +101,7 @@ SetTrayIcon(Server) {
         Menu, Tray, Icon, ProxyLink.ico
         Menu, Tray, Tip , Proxy Server : %Server%
     }
+    Menu, Tray, Icon        ; 显示托盘图标
 }
 
 ;------快捷键切换代理状态--------
@@ -174,13 +175,12 @@ Capslock::ESC
 ESC::Capslock
 
 ;---右 Win 键运行对话框---
-;RWin:: #r
-;^-::#e
+RWin:: #r
 
 ;======================隐藏显示窗口==========================
 
 ;---Chromium---
-^q:: toggleWin("- Google Chrome")
+^h:: toggleWin("- Google Chrome")
 
 ;---Kodi---
 ^1:: toggleWin("ahk_class Kodi")
@@ -219,29 +219,19 @@ toggleWin(win_title)
 ;===============================有道词典=====================================
 
 ;---显示隐藏有道词典窗口---
-<^Up::
-<^Down::^!x
+^i::^!x
+;<^Up::
+;<^Down::^!x
 ;ControlGetFocus, Edit1, ahk_class YdMiniModeWndClassName
 ;return
 
 ;---有道词典标准窗口活动时下列快捷键有效---
 #IfWinActive, ahk_class YodaoMainWndClass
-    Up::moveWindow("Up")
-    Down::moveWindow("Down")
-    Left::moveWindow("Left")
-    Right::moveWindow("Right")
-    /::^!v
-#IfWinActive
-
-;---有道词典迷你窗口活动时下列快捷键有效---
-#IfWinActive, ahk_class YdMiniModeWndClassName
-    ;---移动有道词典迷你窗口---
-    Up::moveWindow("Up")
-    Down::moveWindow("Down")
-    Left::moveWindow("Left")
-    Right::moveWindow("Right")
-
-    ;---发音---
+    ^k::moveWindow("Up")
+    ^j::moveWindow("Down")
+    ^h::moveWindow("Left")
+    ^l::moveWindow("Right")
+    ^p::^v
     /::^!v
 #IfWinActive
 
