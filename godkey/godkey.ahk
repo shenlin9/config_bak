@@ -95,10 +95,10 @@ SetProxy(Server) {
 SetTrayIcon(Server) {
     ;Menu, Tray, NoIcon     ; 隐藏托盘图标
     if (Server = ""){
-        Menu, Tray, Icon, DirectLink.ico
+        Menu, Tray, Icon, C:\Users\T460P\config_bak\godkey\DirectLink.ico
         Menu, Tray, Tip , Direct Link
     } else {
-        Menu, Tray, Icon, ProxyLink.ico
+        Menu, Tray, Icon, C:\Users\T460P\config_bak\godkey\ProxyLink.ico
         Menu, Tray, Tip , Proxy Server : %Server%
     }
     Menu, Tray, Icon        ; 显示托盘图标
@@ -175,12 +175,24 @@ Capslock::ESC
 ESC::Capslock
 
 ;---右 Win 键运行对话框---
-RWin:: #r
+RWin::#r
+
+;--左 Ctrl+单引号映射为 Alt+Tab
+<^'::AltTab
+
+;--左 Ctrl+分号映射为 Alt+ESC
+<^;::!ESC
 
 ;======================隐藏显示窗口==========================
 
 ;---Chromium---
+;^h:: toggleWin("ahk_class Chrome_WidgetWin_1")
 ^h:: toggleWin("- Google Chrome")
+
+#IfWinActive, ahk_class Chrome_WidgetWin_1
+    ^p::^v
+    Capslock::Click
+#IfWinActive
 
 ;---Kodi---
 ^1:: toggleWin("ahk_class Kodi")
@@ -206,6 +218,7 @@ toggleWin(win_title)
     {
         WinHide
         Send !{TAB}
+        ;Send !{ESC}
         return -1
     }
     else
@@ -233,6 +246,8 @@ toggleWin(win_title)
     ^l::moveWindow("Right")
     ^p::^v
     /::^!v
+    ,::^Left
+    .::^Right
 #IfWinActive
 
 ;---有道词典划词窗口活动时下列快捷键有效---

@@ -47,20 +47,21 @@ Plugin 'VundleVim/Vundle.vim'
 "colorscheme
 Plugin 'morhetz/gruvbox'
 
-"状态条
+" 状态条
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-"let g:airline_powerline_fonts = 1
-let g:airline_theme='badwolf'
-
-let g:airline#extensions#tabline#enabled = 1
-"let g:airline#extensions#tabline#left_sep = ' '
-"let g:airline#extensions#tabline#left_alt_sep = '|'
-"let g:airline#extensions#tabline#formatter = 'default'
 
 "buffer 状态
-Plugin 'bling/vim-bufferline'
-
+"Plugin 'bling/vim-bufferline'
+"let g:bufferline_echo = 0
+"let g:bufferline_active_buffer_left = '['
+"let g:bufferline_active_buffer_right = ']'
+"let g:bufferline_rotate = 1
+"let g:bufferline_fixed_index =  0 "always first
+"let g:bufferline_inactive_highlight = 'StatusLine'
+"let g:bufferline_active_highlight = 'StatusLineNC'
+"let g:bufferline_solo_highlight = 1
+"let g:bufferline_pathshorten = 1
 
 "markdown 语法
 Plugin 'godlygeek/tabular'
@@ -111,7 +112,7 @@ Plugin 'Chiel92/vim-autoformat'
 Plugin 'tpope/vim-surround'
 
 " nerdtree
-Plugin 'scrooloose/nerdtree'
+"Plugin 'scrooloose/nerdtree'
 
 " 注释
 Plugin 'scrooloose/nerdcommenter'
@@ -120,7 +121,7 @@ Plugin 'scrooloose/nerdcommenter'
 "Plugin 'majutsushi/tagbar'
 
 "ctrlp
-"Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'ctrlpvim/ctrlp.vim'
 
 call vundle#end()            " required
 
@@ -128,16 +129,6 @@ filetype plugin indent on    " required
 
 " Put your non-Plugin stuff after this line
 
-"--------------------vim-airline--------------
-
-"禁用空白检测
-silent! call airline#extensions#whitespace#disable()
-let g:airline#extensions#whitespace#enabled = 0
-"let g:airline#extensions#whitespace#checks = [ 'indent', 'trailing', 'long', 'mixed-indent-file' ]
-" indent: mixed indent within a line
-" long:   overlong lines
-" trailing: trailing whitespace
-" mixed-indent-file: different indentation in different lines
 
 "--------------------YouCompleteMe--------------
 
@@ -150,18 +141,18 @@ let g:airline#extensions#whitespace#enabled = 0
 "set conceallevel=2
 
 "禁止自动折叠
-let g:vim_markdown_folding_disabled = 1
+"let g:vim_markdown_folding_disabled = 1
 
 "LaTeX 数学公式
 "Used as `$x^2$`, `$$x^2$$`, escapable as `\$x\$` and `\$\$x\$\$`.
-let g:tex_conceal = ""
-let g:vim_markdown_math = 1
+"let g:tex_conceal = ""
+"let g:vim_markdown_math = 1
 
 "高亮 JSON 语法，以 { 开始和 } 结束，需要 elzr/vim-json，已安装
-let g:vim_markdown_json_frontmatter = 1
+"let g:vim_markdown_json_frontmatter = 1
 
 "高亮 YAML Front Matter 语法，以 --- 开始和结束
-let g:vim_markdown_frontmatter = 1
+"let g:vim_markdown_frontmatter = 1
 
 "高亮 TOML Front Matter 语法，以 +++ 开始和结束
 "let g:vim_markdown_toml_frontmatter = 1
@@ -229,8 +220,24 @@ let g:vim_markdown_frontmatter = 1
 "colorscheme solarized
 "let g:solarized_termcolors=256
 
-"set background=light
+set background=dark
 colorscheme gruvbox
+
+"--------------------airline--------------------
+let g:airline_theme='bubblegum'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#syntastic#enabled = 1
+let g:airline_powerline_fonts = 0
+set laststatus=2
+"禁用空白检测
+silent! call airline#extensions#whitespace#disable()
+let g:airline#extensions#whitespace#enabled = 0
+"let g:airline#extensions#whitespace#checks = [ 'indent', 'trailing', 'long', 'mixed-indent-file' ]
+" indent: mixed indent within a line
+" long:   overlong lines
+" trailing: trailing whitespace
+" mixed-indent-file: different indentation in different lines
+" https://github.com/vim-airline/vim-airline/wiki/Screenshots
 
 "--------------------设置 = + - * 前后自动空格 , 号后面自动添加空格--------------------
 if exists("g:equ")
@@ -269,13 +276,13 @@ endfunction
 "-----------------------------------------------------------------------------
 
 "检测文件编码顺序
-set fileencodings=ucs-bom,utf-8,chinese,cp936,gb18030,big5,euc-jp,euc-kr,latinl
+set fileencodings=utf-8,ucs-bom,chinese,cp936,gb18030,big5,euc-jp,euc-kr,latinl
 "设置vim终端显示编码
-set termencoding=utf8
+set termencoding=utf-8
 "设置vim内部编码
-set encoding=utf8
+set encoding=utf-8
 "设置写入文件时编码
-set fileencoding=utf8
+set fileencoding=utf-8
 
 "判定当前操作系统类型
 if(has("win32") || has("win95") || has("win64") || has("win16"))
@@ -284,14 +291,13 @@ else
     let g:iswindows=0
 endif
 
-"设置字体，字体中的空格要转义
+"设置字体，字体中的空格要转义或用下划线代替，字体设置不当还曾导致全屏时下方和右
+"方出现空白，无法真正全屏，如把下面的字号改为11则出现上述情况
 if(g:iswindows==1)
-    "set guifont=等距更纱黑体\ SC:h13:w6
-    set guifont=DejaVu\ Sans\ Mono:h13:w6
+    set guifont=等距更纱黑体_TC_LIGHT:h12
 elseif has("unix")
     set guifont=Andale\ Mono\ 12
 endif
-"set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h12:w6
 
 "设置编码后重新加载菜单，否则菜单乱码
 if(g:iswindows==1)
@@ -304,12 +310,13 @@ endif
 " GUI 设置
 if has("gui_running")
     au GUIEnter * simalt ~x " 窗口启动时自动最大化
-    set guioptions-=m " 隐藏菜单栏
-    set guioptions-=T " 隐藏工具栏
-    set guioptions-=L " 隐藏左侧滚动条
-    set guioptions-=r " 隐藏右侧滚动条
-    set guioptions-=b " 隐藏底部滚动条
-    "set showtabline=0 " 隐藏Tab栏
+    set guioptions=''
+"    set guioptions-=m " 隐藏菜单栏
+"    set guioptions-=T " 隐藏工具栏
+"    set guioptions-=L " 隐藏左侧滚动条
+"    set guioptions-=r " 隐藏右侧滚动条
+"    set guioptions-=b " 隐藏底部滚动条
+"    set showtabline=0 " 隐藏Tab栏
 endif
 
 "没有字节序标记 Byte Order Mark 
@@ -431,5 +438,56 @@ set wildmode=longest:list,full
 set omnifunc=syntaxcomplete#Complete
 " imap <silent> ` <C-X><C-O>
 
+" NERDTree 快捷键
+"nnoremap <C-N> :NERDTree<CR>
 
+" 缓存快捷键
+function! GetNChar()
+     let l:number = 3
+     let l:string = ""
 
+     while l:number > 0
+       let l:string .= nr2char(getchar())
+       let l:number -= 1
+     endwhile
+
+     echo l:string
+endfunction
+
+" 未实现不用回车直接触发功能
+"nnoremap gb :ls<CR>:buffer<Space>call GetNChar()<CR>
+nnoremap gb :ls<CR>:buffer<Space>
+nnoremap <Tab> :bnext<CR>
+nnoremap <S-Tab> :bprevious<CR>
+nnoremap <C-X> :bdelete<CR>
+
+" CtrlP
+"nmap <Leader>b :CtrlPBuffer<CR>
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlPMRU'
+"let g:ctrlp_root_markers = ['.ctrlp']
+let g:ctrlp_mruf_max = 250
+let g:ctrlp_working_path_mode = 'ra'
+"  c - 当前文件所在的目录。
+"  a - 当前文件所在的目录，除非这个目录为当前工作目录的子目录
+"  r - 包含下列文件或者目录的最近的祖先目录:
+"      .git .hg .svn .bzr _darcs
+"  w - 用来修饰r：使用当前工作目录而不是当前文件所在目录进行查找
+"  0 或者 <empty> - 禁用这项功能。
+"
+" 排除版本控制文件
+if(g:iswindows==1)
+    set wildignore+=*\\.git\\*,*\\.hg\\*,*\\.svn\\*,*\\.deploy_git\\*  " Windows ('noshellslash')
+elseif has("unix")
+    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.deploy_git/*        " Linux/MacOSX
+endif
+"启用会话缓存，按<F5>键可以清除当前目录的缓存以获取新文件，移除已删除的文件并应用新的忽略选项。
+let g:ctrlp_use_caching = 1
+"退出Vim时不删除缓存文件来启用跨会话的缓存
+let g:ctrlp_clear_cache_on_exit = 0
+"忽略的文件或目录
+let g:ctrlp_custom_ignore = {
+\ 'dir':  '\v[\/](node_modules|scaffolds|themes|public|images)$',
+\ 'file': '\v\.(exe|so|dll|json)$',
+\ 'link': 'SOME_BAD_SYMBOLIC_LINKS',
+\ }
