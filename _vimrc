@@ -93,15 +93,6 @@ Plugin 'SirVer/ultisnips'
 " Snippets are separated from the engine. Add this if you want them:
 Plugin 'honza/vim-snippets'
 
-" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
-let g:UltiSnipsExpandTrigger="<tab>"
-"let g:UltiSnipsListSnippets="<c-tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-j>"
-let g:UltiSnipsJumpBackwardTrigger="<c-k>"
-" If you want :UltiSnipsEdit to split your window.
-let g:UltiSnipsEditSplit="vertical"
-let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/bundle/vim-snippets/UltiSnips', $HOME.'/UltiSnips']
-
 " 缩进线，目前和插入模式下的 ` 冲突
 "Plugin 'Yggdroot/indentLine'
 
@@ -129,6 +120,16 @@ filetype plugin indent on    " required
 
 " Put your non-Plugin stuff after this line
 
+"--------------------UltiSnips--------------
+
+" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
+let g:UltiSnipsExpandTrigger="<tab>"
+"let g:UltiSnipsListSnippets="<c-tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
+let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/bundle/vim-snippets/UltiSnips', $HOME.'/UltiSnips']
 
 "--------------------YouCompleteMe--------------
 
@@ -137,11 +138,8 @@ filetype plugin indent on    " required
 
 "--------------------vim-markdown--------------
 
-"禁止语法隐藏，改为 0 则
-"set conceallevel=2
-
 "禁止自动折叠
-"let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_folding_disabled = 1
 
 "LaTeX 数学公式
 "Used as `$x^2$`, `$$x^2$$`, escapable as `\$x\$` and `\$\$x\$\$`.
@@ -229,6 +227,7 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#syntastic#enabled = 1
 let g:airline_powerline_fonts = 0
 set laststatus=2
+
 "禁用空白检测
 silent! call airline#extensions#whitespace#disable()
 let g:airline#extensions#whitespace#enabled = 0
@@ -239,7 +238,7 @@ let g:airline#extensions#whitespace#enabled = 0
 " mixed-indent-file: different indentation in different lines
 " https://github.com/vim-airline/vim-airline/wiki/Screenshots
 
-"--------------------设置 = + - * 前后自动空格 , 号后面自动添加空格--------------------
+"--------------设置 = + - * 前后自动空格 , 号后面自动添加空格-------
 if exists("g:equ")
     :inoremap = <c-r>=EqualSign('=')<CR>
     :inoremap + <c-r>=EqualSign('+')<CR>
@@ -273,7 +272,7 @@ function! EqualSign(char)
     endif
 endfunction
 
-"-----------------------------------------------------------------------------
+"----------------------------------------------------------------
 
 "检测文件编码顺序
 set fileencodings=utf-8,ucs-bom,chinese,cp936,gb18030,big5,euc-jp,euc-kr,latinl
@@ -311,12 +310,6 @@ endif
 if has("gui_running")
     au GUIEnter * simalt ~x " 窗口启动时自动最大化
     set guioptions=''
-"    set guioptions-=m " 隐藏菜单栏
-"    set guioptions-=T " 隐藏工具栏
-"    set guioptions-=L " 隐藏左侧滚动条
-"    set guioptions-=r " 隐藏右侧滚动条
-"    set guioptions-=b " 隐藏底部滚动条
-"    set showtabline=0 " 隐藏Tab栏
 endif
 
 "没有字节序标记 Byte Order Mark 
@@ -401,14 +394,14 @@ nmap cm/ I// <Esc>
 nmap cm# I# <Esc>
 
 "中英文空格
-command Spa s/\v(\s?\w+\s?)/ \1 /g
+"command Spa s/\v(\s?\w+\s?)/ \1 /g
 
 "Format Markdown
 "command Fmd s/“/ `/g|s/”/` /g|s/（/(/g|s/）/)/g|s/,/，/g|s/./。/g|s/;/；/g|s/' / `/g|s/ '/` /g
-command Fmd s/' / `/g|s/ '/` /g|s/“/ `/g|s/”/` /g|s/（/(/g|s/）/)/g|s/,/，/g|s/./。/g|s/;/；/g
+"command Fmd s/' / `/g|s/ '/` /g|s/“/ `/g|s/”/` /g|s/（/(/g|s/）/)/g|s/,/，/g|s/./。/g|s/;/；/g
 
 "Quote Uppercase
-command Quc s/\v (\u+)[ ,.]/ `\1` /g
+"command Quc s/\v (\u+)[ ,.]/ `\1` /g
 
 "Write Markdown
 "command Wmd w 文件名.md
@@ -467,6 +460,7 @@ let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlPMRU'
 "let g:ctrlp_root_markers = ['.ctrlp']
 let g:ctrlp_mruf_max = 250
+let g:ctrlp_mruf_case_sensitive = 0
 let g:ctrlp_working_path_mode = 'ra'
 "  c - 当前文件所在的目录。
 "  a - 当前文件所在的目录，除非这个目录为当前工作目录的子目录
@@ -491,3 +485,16 @@ let g:ctrlp_custom_ignore = {
 \ 'file': '\v\.(exe|so|dll|json)$',
 \ 'link': 'SOME_BAD_SYMBOLIC_LINKS',
 \ }
+
+" autowrite
+set autowrite
+
+" undo 设置
+set hidden
+
+" Persistent undo
+set undofile
+set undodir=$HOME/.vim/undo
+
+set undolevels=1000
+set undoreload=10000
