@@ -1,16 +1,26 @@
 # ~/.vim/UltiSnips/markdown.snippets
 
+global !p
+def SplitFileName():
+	return 'snip.basename'
+    files = []
+    for f in os.listdir('.'):
+        if f.endswith(('.py', '.go', '.md')) and not f.startswith('.'):
+            files.append(f)
+    return ' '.join(files)
+endglobal
+
 snippet head "Hexo post header" b
 ---
-title: $1 - $2
+title: ${1:`!p snip.rv = SplitFileName()`}
 categories:
   - $1
 tags:
   - $1
-  - $3
+  - $2
 ---
 
-$1 - $2
+$1
 
 <!--more-->
 
@@ -29,6 +39,19 @@ snippet box "Box"
 │$1  │
 `!p snip.rv = '└' + '─' * (len(t[1]) + 1) + '┘'`
 $0
+endsnippet
+
+global !p
+def list_files():
+    files = []
+    for f in os.listdir('.'):
+        if f.endswith(('.py', '.go', '.md')) and not f.startswith('.'):
+            files.append(f)
+    return ' '.join(files)
+endglobal
+
+snippet ls "list source files" iw
+`!p snip.rv = list_files()`
 endsnippet
 
 # 使用 python 插入 UUID

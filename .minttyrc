@@ -1,4 +1,4 @@
-Font=等距更纱黑体 SC
+Font=等距更纱黑体 SC Light
 FontHeight=11
 Transparency=low
 FontSmoothing=full
@@ -30,7 +30,7 @@ BoldWhite=250,240,230
 
 BellTaskbar=no
 Term=xterm-256color
-FontWeight=400
+FontWeight=300
 FontIsBold=no
 BellType=0
 

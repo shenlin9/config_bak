@@ -1,3 +1,4 @@
+#Persistent
 #SingleInstance force
 
 DetectHiddenWindows, On
@@ -178,8 +179,12 @@ RWin::#r
 ; ======================TotalCmd==========================
 
 #IfWinActive, ahk_class TTOTAL_CMD
-    <^j::Down
-    <^k::Up
+    ,::Backspace
+    .::Enter
+    '::Appskey
+    ; 直接映射为 Up，Down 失败，这种方式可以
+    ^j::Send {Down}
+    ^k::Send {Up}
 #IfWinActive
 
 ; ======================隐藏显示窗口==========================
