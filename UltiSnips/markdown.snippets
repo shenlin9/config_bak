@@ -1,23 +1,28 @@
 # ~/.vim/UltiSnips/markdown.snippets
 
 global !p
-def SplitFileName():
-	return 'snip.basename'
-    files = []
-    for f in os.listdir('.'):
-        if f.endswith(('.py', '.go', '.md')) and not f.startswith('.'):
-            files.append(f)
-    return ' '.join(files)
+def SplitFileName(FileName):
+	lst = FileName.split('-')
+	if len(lst) < 3:
+		return ''
+
+	tags = lst[2].strip()
+	if tags == '':
+		return ''
+
+	tags = tags.replace(',','\n- ')
+	return tags
 endglobal
 
-snippet head "Hexo post header" b
+snippet head "Hexo Front-matter" b
 ---
-title: ${1:`!p snip.rv = SplitFileName()`}
+title: ${1:`!p snip.rv = snip.basename`}
 categories:
-  - $1
+- ${2:`!p snip.rv = snip.basename.split('-')[0].strip()`}
 tags:
-  - $1
-  - $2
+- $2
+- ${3:`!p snip.rv = SplitFileName(snip.basename)`}
+date: `!v strftime("%Y-%m-%d %H:%M:%S")`
 ---
 
 $1
@@ -27,12 +32,27 @@ $1
 ## $0
 endsnippet
 
+###################################################
 
-snippet ```g "golang code block"
-\`\`\`go
-${1:}
+snippet ` "Markdown Code Block"
+\`\`\`$1
+$0
 \`\`\`
 endsnippet
+
+snippet `p "Python Code Block"
+\`\`\`python
+$0
+\`\`\`
+endsnippet
+
+snippet `g "Go Code Block"
+\`\`\`go
+$0
+\`\`\`
+endsnippet
+
+###################################################
 
 snippet box "Box"
 `!p snip.rv = '┌' + '─' * (len(t[1]) + 1) + '┐'`
@@ -40,6 +60,8 @@ snippet box "Box"
 `!p snip.rv = '└' + '─' * (len(t[1]) + 1) + '┘'`
 $0
 endsnippet
+
+###################################################
 
 global !p
 def list_files():
@@ -53,6 +75,8 @@ endglobal
 snippet ls "list source files" iw
 `!p snip.rv = list_files()`
 endsnippet
+
+###################################################
 
 # 使用 python 插入 UUID
 # guid: `!p

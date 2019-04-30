@@ -125,7 +125,7 @@ If ScrollLockState = D
 return
 
 ; ------快捷键查看代理状态--------
-F10::
+F8::
 Run,rundll32.exe shell32.dll`, Control_RunDLL inetcpl.cpl`, `,4L
 Sleep,200
 Send !l
@@ -154,7 +154,7 @@ if winc_presses = 1 ;  此键按下了一次.
 else if winc_presses >= 2 ;  此键按下至少两次.
 {
     Sleep, 3000
-    Run, psshutdown.exe -d -t 0
+    Run, psshutdown.exe -d -t 0, ,Hide
 }
 ;  不论触发了上面的哪个动作, 都对 count 进行重置
 ;  为下一个系列的按下做准备:
@@ -180,7 +180,7 @@ RWin::#r
 
 #IfWinActive, ahk_class TTOTAL_CMD
     ,::Backspace
-    .::Enter
+    ;.::Enter
     '::Appskey
     ; 直接映射为 Up，Down 失败，这种方式可以
     ^j::Send {Down}
