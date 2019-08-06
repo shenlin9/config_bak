@@ -39,3 +39,5 @@ alias ta='tmux a'
 
 alias mwsl='winpty wsl'
 alias mysql='winpty mysql -uroot -p'
+
+alias linux='ssh shenlin@192.168.56.101'

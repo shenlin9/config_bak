@@ -114,6 +114,9 @@ Plugin 'scrooloose/nerdcommenter'
 "ctrlp
 Plugin 'ctrlpvim/ctrlp.vim'
 
+" 中文排版
+"Plugin 'hotoo/pangu.vim'
+
 call vundle#end()            " required
 
 filetype plugin indent on    " required
@@ -499,4 +502,17 @@ set undodir=$HOME/.vim/undo
 set undolevels=1000
 set undoreload=10000
 
+" 超长换行快捷键
 nmap , VQ
+
+" 中文模式下输入的 ·改为英文的 `
+" 主要用于 markdown 的代码块，避免切换输入法
+imap · `
+imap （ (
+imap ） )
+imap ？ ?
+imap ‘ '
+imap ’ '
+
+" 自动中文排版，开启后速度太慢
+" autocmd BufWritePre *.markdown,*.md,*.text,*.txt,*.wiki,*.cnx call PanGuSpacing()

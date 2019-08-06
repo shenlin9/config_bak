@@ -149,10 +149,12 @@ KeyWinC:
 SetTimer, KeyWinC, off
 if winc_presses = 1 ;  此键按下了一次.
 {
-    ;  防止误按，按一次不作什么事
+    ;  关闭显示器
+    SendMessage,0x112,0xF170,2,,Program Manager
 }
-else if winc_presses >= 2 ;  此键按下至少两次.
+else if winc_presses >= 3 ;  此键按下至少三次.
 {
+    ;  3 秒后休眠
     Sleep, 3000
     Run, psshutdown.exe -d -t 0, ,Hide
 }
@@ -246,9 +248,13 @@ toggleWin(win_title)
 
 ; ---有道词典标准窗口活动时下列快捷键有效---
 #IfWinActive, ahk_class YodaoMainWndClass
+    Up::
     ^k::moveWindow("Up")
+    Down::
     ^j::moveWindow("Down")
+    Left::
     ^h::moveWindow("Left")
+    Right::
     ^l::moveWindow("Right")
     ^p::^v
     /::^!v
