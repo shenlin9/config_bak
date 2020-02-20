@@ -78,7 +78,7 @@ DownLoad()
     return
 }
 
-^\::DownLoad()
+;^\::DownLoad()
 
 ; =====================快速查看、禁用、启用 IE 代理==============================
 
@@ -152,7 +152,7 @@ if winc_presses = 1 ;  此键按下了一次.
     ;  关闭显示器
     SendMessage,0x112,0xF170,2,,Program Manager
 }
-else if winc_presses >= 3 ;  此键按下至少三次.
+else if winc_presses >= 2 ;  此键按下至少三次.
 {
     ;  3 秒后休眠
     Sleep, 3000
@@ -189,7 +189,16 @@ RWin::#r
     ^k::Send {Up}
 #IfWinActive
 
+; ======================PotPlayer==========================
+
+#IfWinActive, ahk_class PotPlayer64
+    ,::^!e
+#IfWinActive
+
 ; ======================隐藏显示窗口==========================
+
+; ^\:: toggleWin("rain.m4a")
+^\:: toggleWin("dnsrelay.exe")
 
 ; ---Chromium---
 ; ^h:: toggleWin("ahk_class Chrome_WidgetWin_1")
@@ -200,11 +209,12 @@ RWin::#r
     Capslock::Click
 #IfWinActive
 
-; ---Kodi---
-^1:: toggleWin("ahk_class Kodi")
+; ---Movavi Video Editor---
+^3:: toggleWin("Movavi Video Editor")
 
 ; ---VSDC Video Editor---
-^4:: toggleWin("VSDC Video Editor")
+;^4:: toggleWin("Adobe Premiere Pro 2020")
+;^4:: toggleWin("Total Commander")
 
 ; ---firefox---
 ^2:: 

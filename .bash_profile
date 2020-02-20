@@ -40,4 +40,12 @@ alias ta='tmux a'
 alias mwsl='winpty wsl'
 alias mysql='winpty mysql -uroot -p'
 
+alias gcp1='ssh -i /d/Documents/TopSecret/GCP_Private_Key_SSH_Format.ppk shenlin1970@34.92.146.185'
+alias gcp2='ssh -i /d/Documents/TopSecret/GCP_Private_Key_SSH_Format.ppk shenlin1970@34.94.94.33'
+alias ping1='ping 34.92.146.185 -t'
+alias ping2='ping 34.94.94.33 -t'
+
 alias linux='ssh shenlin@192.168.56.101'
+
+alias repo='cd /d/git-repo/shenlin.ltd'
+
