@@ -4,17 +4,35 @@ set nocompatible
 
 call plug#begin()
 
+" Vim 中文手册
+Plug 'yianwillis/vimcdoc'
+
+" 目录树
+if has('nvim')
+  Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/defx.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+
+" 开始界面
+Plug 'mhinz/vim-startify'
+
 " colorscheme
 Plug 'morhetz/gruvbox'
 
-" 状态条
+" 光标所在单词下面加下划线
+Plug 'itchyny/vim-cursorword'
+
+" 状态条和 buffer 条
 Plug 'itchyny/lightline.vim'
 Plug 'mengelbrecht/lightline-bufferline'
 
 " Go 引擎 
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
-" Markdown,第一个插件是下面的插件要调用到的
+" Markdown 语法高亮,第一个是依赖插件
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 
@@ -34,8 +52,15 @@ Plug 'tpope/vim-surround'
 " . 的增强版
 Plug 'tpope/vim-repeat'
 
-call plug#end()
+" git
+Plug 'airblade/vim-gitgutter'
 
+" snippets 代码库
+" snippets 引擎使用的是 coc.nvim 的 coc-snippets
+" 使用 coc 自带的 CocInstall 功能安装
+Plug 'honza/vim-snippets'
+
+call plug#end()
 
 "--------------------colorscheme--------------------
 
@@ -172,32 +197,23 @@ nmap cm/ I// <Esc>
 nmap cm# I# <Esc>
 nmap <C-/> I// <Esc>
 
-"中英文空格
-"command Spa s/\v(\s?\w+\s?)/ \1 /g
-
-"Format Markdown
-"command Fmd s/“/ `/g|s/”/` /g|s/（/(/g|s/）/)/g|s/,/，/g|s/./。/g|s/;/；/g|s/' / `/g|s/ '/` /g
-"command Fmd s/' / `/g|s/ '/` /g|s/“/ `/g|s/”/` /g|s/（/(/g|s/）/)/g|s/,/，/g|s/./。/g|s/;/；/g
-
-"Quote Uppercase
-"command Quc s/\v (\u+)[ ,.]/ `\1` /g
-
-"Write Markdown
-"command Wmd w 文件名.md
-
 " 编辑配置文件
-command Rc e $HOME\\_vimrc
+command Vimrc e $HOME\\_vimrc
 " 重新加载配置文件
 command So source $HOME\\_vimrc
 " 新文件
 command E enew
+" 进入 Markdown 笔记目录
+command Note cd D:\git-repo\shenlin.ltd\source\_posts\
 
 "折叠代码中的 class、function 等代码块
 set foldmethod=indent
 set foldlevel=99
 
 "更改折叠代码块默认的快捷键
-nnoremap <Space> za
+"nnoremap <Space> za
+
+" 插入空行
 nnoremap [<Space> O<ESC>j
 nnoremap ]<Space> o<ESC>k
 nnoremap [] O<ESC>jo<ESC>k
@@ -238,7 +254,7 @@ nnoremap <C-X> :bdelete<CR>
 " autowrite
 set autowrite
 
-" undo 设置
+" 允许不保存切换buffer
 set hidden
 
 " Persistent undo
@@ -249,6 +265,10 @@ set undolevels=1000
 set undoreload=10000
 
 set backspace=indent,eol,start
+
+" 新窗口的默认位置，若是水平切割则位于下方，垂直切割则位于右方
+set splitbelow
+set splitright
 
 " 超长换行快捷键
 "nmap , VQ
@@ -364,9 +384,14 @@ set laststatus=2  " Basic
 " }}}
 "
 
+" vim-go==================================================================={{{
+"
 "let g:go_def_mode='gopls'
 "let g:go_info_mode='gopls'
 "autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
+"
+"}}}
+
 
 " coc.nvim================================================================={{{
 "
@@ -377,8 +402,8 @@ set hidden
 set nobackup
 set nowritebackup
 
-" Give more space for displaying messages.
-set cmdheight=2
+" Give more space for displaying messages. 状态栏高度
+"set cmdheight=2
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " delays and poor user experience.
@@ -495,8 +520,9 @@ set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " Mappings using CoCList:
 "nnoremap <silent> <space>g :<C-u>CocList --normal gstatus<CR>
-nnoremap <silent> <space>g :<C-u>CocList<CR>
-nnoremap <silent> <space>m :<C-u>CocList mru<CR>
+nnoremap <silent> ,g :<C-u>CocList<CR>
+nnoremap <silent> ,e :<C-u>CocList files<CR>
+nnoremap <silent> ,r :<C-u>CocList mru<CR>
 nnoremap <silent> <space>b :<C-u>CocList buffers<CR>
 " Show all diagnostics.
 nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
@@ -521,7 +547,7 @@ nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 " coc-snippets=========================================={{{
 "
 " Use <C-l> for trigger snippet expand.
-"imap <C-l> <Plug>(coc-snippets-expand)
+imap <C-l> <Plug>(coc-snippets-expand)
 
 " Use <C-j> for select text for visual placeholder of snippet.
 vmap <C-j> <Plug>(coc-snippets-select)
@@ -568,8 +594,103 @@ let g:markdown_fenced_languages = ['html', 'python', 'bash=sh']
 let g:markdown_syntax_conceal = 0
 let g:markdown_minlines = 100
 
-
 " Markdown
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_toc_autofit = 1
 
+" 目录树 defx 依赖插件 roxma/nvim-yarp 需要
+let g:python3_host_prog = "C:/Python37/python.exe"
+
+" 目录树 defx 设置，基本为官方文档的配置
+let g:maplocalleader=';'
+nnoremap <silent> <LocalLeader>e
+            \ :<C-u>Defx -resume -toggle -buffer-name=tab`tabpagenr()` <CR>
+nnoremap <silent> <LocalLeader>a
+            \ :<C-u>Defx -resume -buffer-name=tab`tabpagenr()` -search=`expand('%:p')`<CR>
+
+call defx#custom#option('_', {
+            \ 'columns': 'indent:git:icons:filename',
+            \ 'winwidth': 35,
+            \ 'split': 'vertical',
+            \ 'direction': 'topleft',
+            \ 'show_ignored_files': 0,
+            \ 'root_marker': '≡ ',
+            \ 'ignored_files':
+            \     '.mypy_cache,.pytest_cache,.git,.hg,.svn,.stversions'
+            \   . ',__pycache__,.sass-cache,*.egg-info,.DS_Store,*.pyc,*.swp'
+            \ })
+
+autocmd FileType defx call s:defx_my_settings()
+function! s:defx_my_settings() abort
+  " Define mappings
+  nnoremap <silent><buffer><expr> <CR>
+  \ defx#do_action('drop')  " 在右侧打开，open 则为当前窗口打开 
+  nnoremap <silent><buffer><expr> c
+  \ defx#do_action('copy')
+  nnoremap <silent><buffer><expr> m
+  \ defx#do_action('move')
+  nnoremap <silent><buffer><expr> p
+  \ defx#do_action('paste')
+  nnoremap <silent><buffer><expr> l
+  \ defx#do_action('open')
+  nnoremap <silent><buffer><expr> E
+  \ defx#do_action('open', 'vsplit')
+  nnoremap <silent><buffer><expr> P
+  \ defx#do_action('open', 'pedit')
+  nnoremap <silent><buffer><expr> o
+  \ defx#do_action('open_or_close_tree')
+  nnoremap <silent><buffer><expr> K
+  \ defx#do_action('new_directory')
+  nnoremap <silent><buffer><expr> N
+  \ defx#do_action('new_file')
+  nnoremap <silent><buffer><expr> M
+  \ defx#do_action('new_multiple_files')
+  nnoremap <silent><buffer><expr> C
+  \ defx#do_action('toggle_columns',
+  \                'mark:indent:icon:filename:type:size:time')
+  nnoremap <silent><buffer><expr> S
+  \ defx#do_action('toggle_sort', 'time')
+  nnoremap <silent><buffer><expr> d
+  \ defx#do_action('remove')
+  nnoremap <silent><buffer><expr> r
+  \ defx#do_action('rename')
+  nnoremap <silent><buffer><expr> !
+  \ defx#do_action('execute_command')
+  nnoremap <silent><buffer><expr> x
+  \ defx#do_action('execute_system')
+  nnoremap <silent><buffer><expr> yy
+  \ defx#do_action('yank_path')
+  nnoremap <silent><buffer><expr> .
+  \ defx#do_action('toggle_ignored_files')
+  nnoremap <silent><buffer><expr> ;
+  \ defx#do_action('repeat')
+  nnoremap <silent><buffer><expr> h
+  \ defx#do_action('cd', ['..'])
+  nnoremap <silent><buffer><expr> ~
+  \ defx#do_action('cd')
+  nnoremap <silent><buffer><expr> <Esc>
+  \ defx#do_action('quit')
+  nnoremap <silent><buffer><expr> <Space>
+  \ defx#do_action('toggle_select') . 'j'
+  nnoremap <silent><buffer><expr> *
+  \ defx#do_action('toggle_select_all')
+  nnoremap <silent><buffer><expr> j
+  \ line('.') == line('$') ? 'gg' : 'j'
+  nnoremap <silent><buffer><expr> k
+  \ line('.') == 1 ? 'G' : 'k'
+  nnoremap <silent><buffer><expr> <C-l>
+  \ defx#do_action('redraw')
+  nnoremap <silent><buffer><expr> <C-g>
+  \ defx#do_action('print')
+  nnoremap <silent><buffer><expr> cd
+  \ defx#do_action('change_vim_cwd')
+endfunction
+
+" git
+let g:gitgutter_git_executable ='C:/Program Files/Git/bin/git.exe'
+
+" 命令别名帮助文件垂直分隔
+cabbrev h vert h
+
+" 让 Vim 正确显示 JSON 文件注释语法
+autocmd FileType json syntax match Comment +\/\/.\+$+
