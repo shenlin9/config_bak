@@ -181,15 +181,14 @@ RWin::#r
 ; ======================TotalCmd==========================
 
 #IfWinActive, ahk_class TTOTAL_CMD
-    ,::Backspace
-    ;.::Enter
+    ; 右键菜单
     '::Appskey
     ; 直接映射为 Up，Down 失败，这种方式可以
     ^j::Send {Down}
     ^k::Send {Up}
 #IfWinActive
 
-; ======================PotPlayer==========================
+; ======================PotPlayer截屏快捷键==========================
 
 #IfWinActive, ahk_class PotPlayer64
     ,::^!e
@@ -197,79 +196,45 @@ RWin::#r
 
 ; ======================隐藏显示窗口==========================
 
-; ^\:: toggleWin("rain.m4a")
-^\:: toggleWin("dnsrelay.exe")
+; ---背景白噪音---
+;^\:: toggleWin("rain.m4a")
+
+; ---ChinaDNS---
+;^\:: toggleWin("dnsrelay.exe")
 
 ; ---Chromium---
-; ^h:: toggleWin("ahk_class Chrome_WidgetWin_1")
-^h:: toggleWin("- Google Chrome")
+^h:: toggleWin("Google Chrome")
 
-#IfWinActive, ahk_class Chrome_WidgetWin_1
-    ^p::^v
-    Capslock::Click
-#IfWinActive
+; ---Everything---
+^1::^!0
+
+; ---firefox---
+^2:: toggleWin("Mozilla Firefox") 
 
 ; ---Movavi Video Editor---
 ^3:: toggleWin("Movavi Video Editor")
 
-; ---VSDC Video Editor---
-;^4:: toggleWin("Adobe Premiere Pro 2020")
-;^4:: toggleWin("Total Commander")
+;---Total Commander---
+^4:: toggleWin("ahk_class TTOTAL_CMD")
 
-; ---firefox---
-^2:: 
-IfWinExist, Mozilla Firefox （隐私浏览）    ; 注意这里不要加双引号，否则判断出错
-    toggleWin("Mozilla Firefox （隐私浏览）")
-else
-    toggleWin("Mozilla Firefox")
-return
+; ---GoldenDict---
+^i::^!+j
 
-; ---隐藏显示窗口---
-toggleWin(win_title)
-{
-    IfWinNotExist, %win_title%
-        return 0
-
-    IfWinActive
-    {
-        ;WinHide
-        ;WinMinimize
-        WinHide
-        Send !{ESC}
-        return -1
-    }
-    else
-    {
-        ;WinMaximize
-        WinShow
-        WinActivate
-        return 1
-    }
-}
+; ---有道词典---
+;^i::^!x
 
 ; ===============================有道词典=====================================
 
-; ---显示隐藏有道词典窗口---
-^i::^!x
-; <^Up::
-; <^Down::^!x
-; ControlGetFocus, Edit1, ahk_class YdMiniModeWndClassName
-; return
 
 ; ---有道词典标准窗口活动时下列快捷键有效---
 #IfWinActive, ahk_class YodaoMainWndClass
-    Up::
-    ^k::moveWindow("Up")
-    Down::
-    ^j::moveWindow("Down")
-    Left::
-    ^h::moveWindow("Left")
-    Right::
-    ^l::moveWindow("Right")
     ^p::^v
     /::^!v
     ,::^Left
     .::^Right
+
+    ; 移动单词查询内容窗口
+    ;WinMove, ahk_class YdMiniCefWnd, , x, y + Height
 #IfWinActive
 
 ; ---有道词典划词窗口活动时下列快捷键有效---
@@ -278,7 +243,21 @@ toggleWin(win_title)
     d::^!s
 #IfWinActive
 
-; ---移动窗口函数---
+; ===============================移动窗口=======================================
+#If WinActive("ahk_exe Everything.exe")
+or WinActive("ahk_exe GoldenDict.exe")
+or WinActive("ahk_class YodaoMainWndClass")
+    Up::
+    ^k::moveWindow("Up")
+    Down::
+    ^j::moveWindow("Down")
+    Left::
+    ^h::moveWindow("Left")
+    Right::
+    ^l::moveWindow("Right")
+return
+
+; ===============================移动窗口函数===================================
 moveWindow(Direct)
 {
     WinGetClass, class, A
@@ -309,6 +288,27 @@ moveWindow(Direct)
 
     WinMove, ahk_class %class%, , x, y
 
-    ; 移动单词查询内容窗口
-    WinMove, ahk_class YdMiniCefWnd, , x, y + Height
+}
+
+; ===============================隐藏显示窗口===================================
+toggleWin(win_title)
+{
+    IfWinNotExist, %win_title%
+        return 0
+
+    IfWinActive
+    {
+        ;WinHide
+        ;WinMinimize
+        WinHide
+        Send !{ESC}
+        return -1
+    }
+    else
+    {
+        ;WinMaximize
+        WinShow
+        WinActivate
+        return 1
+    }
 }

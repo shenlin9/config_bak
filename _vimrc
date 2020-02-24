@@ -1,4 +1,12 @@
+"判定当前操作系统类型
+if(has("win32") || has("win95") || has("win64") || has("win16"))
+    let g:iswindows=1
+else
+    let g:iswindows=0
+endif
+
 set nocompatible
+filetype plugin indent on
 
 "--------------------插件管理--------------------
 
@@ -85,13 +93,6 @@ set termencoding=utf-8
 set encoding=utf-8
 "设置写入文件时编码
 set fileencoding=utf-8
-
-"判定当前操作系统类型
-if(has("win32") || has("win95") || has("win64") || has("win16"))
-    let g:iswindows=1
-else
-    let g:iswindows=0
-endif
 
 "设置字体，字体中的空格要转义或用下划线代替，字体设置不当还曾导致全屏时下方和右
 "方出现空白，无法真正全屏，如把下面的字号改为11则出现上述情况
@@ -586,8 +587,8 @@ xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
 " 可视模式下不包含最后的换行符
-vmap gm gmh
-vmap $ $h
+"vnoremap gm gmh
+"vnoremap $ $h
 
 " 启用 Vim 自带的代码块高亮显示
 let g:markdown_fenced_languages = ['html', 'python', 'bash=sh']
@@ -686,11 +687,11 @@ function! s:defx_my_settings() abort
   \ defx#do_action('change_vim_cwd')
 endfunction
 
-" git
-let g:gitgutter_git_executable ='C:/Program Files/Git/bin/git.exe'
-
 " 命令别名帮助文件垂直分隔
 cabbrev h vert h
 
 " 让 Vim 正确显示 JSON 文件注释语法
 autocmd FileType json syntax match Comment +\/\/.\+$+
+
+" vim-gitgutter 比默认的命令增加了 zz
+nmap ]c <Plug>(G
