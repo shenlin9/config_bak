@@ -10,6 +10,7 @@ SetTitleMatchMode, Fast
 ;  ! Alt 
 ;  ^ Control 
 ;  + Shift 
+;  ~ 前缀，不屏蔽热键本身的功能
 
 ; ==============程序加载时根据当前代理状态更改图标===========
 ServerAddr := "127.0.0.1:1088"
@@ -182,7 +183,9 @@ RWin::#r
 
 #IfWinActive, ahk_class TTOTAL_CMD
     ; 右键菜单
-    '::Appskey
+    ,::Appskey
+    ; 查看属性
+    .::send !{Enter}
     ; 直接映射为 Up，Down 失败，这种方式可以
     ^j::Send {Down}
     ^k::Send {Up}
@@ -220,11 +223,19 @@ RWin::#r
 ; ---GoldenDict---
 ^i::^!+j
 
+#IfWinActive, ahk_exe GoldenDict.exe
+; 使用逗号直接粘贴剪贴板内容查询
+~,:: Send {BackSpace}^v{Enter}
+
+; 滚动条
+#IfWinActive
+
 ; ---有道词典---
 ;^i::^!x
 
-; ===============================有道词典=====================================
+;F1*::msgbox,
 
+; ===============================有道词典=====================================
 
 ; ---有道词典标准窗口活动时下列快捷键有效---
 #IfWinActive, ahk_class YodaoMainWndClass
@@ -312,3 +323,4 @@ toggleWin(win_title)
         return 1
     }
 }
+
