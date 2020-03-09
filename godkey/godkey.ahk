@@ -171,6 +171,9 @@ Capslock::ESC
 ESC::Capslock
 
 ; ---右 Win 键运行对话框---
+; 只按 RWin 键则弹出运行框，但和其他键组合则不弹运行对话框
+; Make RWin a prefix by using it in front of "&" at least once.
+;RWin & F1::return
 RWin::#r
 
 ; --左 Ctrl+单引号映射为 Alt+Tab
@@ -189,6 +192,8 @@ RWin::#r
     ; 直接映射为 Up，Down 失败，这种方式可以
     ^j::Send {Down}
     ^k::Send {Up}
+    +j::Send, {Control Down}{Shift Down}{Tab}{Shift Up}{Ctrl Up}
+    +k::Send, {Control Down}{Tab}{Ctrl Up}
 #IfWinActive
 
 ; ======================PotPlayer截屏快捷键==========================
@@ -199,14 +204,13 @@ RWin::#r
 
 ; ======================隐藏显示窗口==========================
 
-; ---背景白噪音---
-;^\:: toggleWin("rain.m4a")
-
-; ---ChinaDNS---
-;^\:: toggleWin("dnsrelay.exe")
-
 ; ---Chromium---
 ^h:: toggleWin("Google Chrome")
+
+#IfWinActive, ahk_class Chrome_WidgetWin_1
+    +j::Send, {Control Down}{Shift Down}{Tab}{Shift Up}{Ctrl Up}
+    +k::Send, {Control Down}{Tab}{Ctrl Up}
+#IfWinActive
 
 ; ---Everything---
 ^1::^!0
@@ -220,22 +224,54 @@ RWin::#r
 ;---Total Commander---
 ^4:: toggleWin("ahk_class TTOTAL_CMD")
 
+;--- xxx ---
+;^5:: toggleWin("")
+
+;--- xxx ---
+;^6:: toggleWin("")
+
+;--- xxx ---
+;^7:: toggleWin("")
+
+;--- xxx ---
+;^8:: toggleWin("")
+
+;--- xxx ---
+;^9:: toggleWin("")
+
+;--- xxx ---
+;^0:: toggleWin("")
+
 ; ---GoldenDict---
 ^i::^!+j
 
 #IfWinActive, ahk_exe GoldenDict.exe
 ; 使用逗号直接粘贴剪贴板内容查询
-~,:: Send {BackSpace}^v{Enter}
-
+~':: Send {BackSpace}^v{Enter}
+; 朗读发音
+/::!s
 ; 滚动条
+,::PgUp
+.::PgDn
 #IfWinActive
+
+; 隐藏任务栏
+;^-:: toggleWin("ahk_class Shell_TrayWnd")
+
+; ---背景白噪音---
+;^\:: toggleWin("rain.m4a")
+
+; ---ChinaDNS---
+;^\:: toggleWin("dnsrelay.exe")
+
+; 退出脚本
+;~lbutton & enter::
+;exitapp
+
+; ===============================有道词典=====================================
 
 ; ---有道词典---
 ;^i::^!x
-
-;F1*::msgbox,
-
-; ===============================有道词典=====================================
 
 ; ---有道词典标准窗口活动时下列快捷键有效---
 #IfWinActive, ahk_class YodaoMainWndClass
@@ -255,20 +291,18 @@ RWin::#r
 #IfWinActive
 
 ; ===============================移动窗口=======================================
+
 #If WinActive("ahk_exe Everything.exe")
 or WinActive("ahk_exe GoldenDict.exe")
 or WinActive("ahk_class YodaoMainWndClass")
-    Up::
     ^k::moveWindow("Up")
-    Down::
     ^j::moveWindow("Down")
-    Left::
     ^h::moveWindow("Left")
-    Right::
     ^l::moveWindow("Right")
-return
+#IfWinActive
 
 ; ===============================移动窗口函数===================================
+
 moveWindow(Direct)
 {
     WinGetClass, class, A
@@ -297,11 +331,13 @@ moveWindow(Direct)
     else if ( (y + Height) > A_ScreenHeight)
         y := A_ScreenHeight - Height
 
-    WinMove, ahk_class %class%, , x, y
+    WinMove, ahk_class %class%, , %x%, %y%
 
+    return
 }
 
 ; ===============================隐藏显示窗口===================================
+
 toggleWin(win_title)
 {
     IfWinNotExist, %win_title%
@@ -322,5 +358,33 @@ toggleWin(win_title)
         WinActivate
         return 1
     }
+
+    return
 }
 
+; ===============================鼠标滚轮调整音量===================================
+
+~WheelUp::
+if (existclass("ahk_class Shell_TrayWnd")=1)
+    Send,{Volume_Up}
+Return
+
+~WheelDown::
+if (existclass("ahk_class Shell_TrayWnd")=1)
+    Send,{Volume_Down}
+Return
+
+~MButton::
+if (existclass("ahk_class Shell_TrayWnd")=1)
+    Send,{Volume_Mute}
+Return
+
+existclass(class)
+{
+    MouseGetPos,,,win
+    WinGet,winid,id,%class%
+    if win = %winid%
+        Return,1
+    Else
+        Return,0
+}

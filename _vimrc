@@ -8,6 +8,17 @@ endif
 set nocompatible
 filetype plugin indent on
 
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=300
+
+" Don't pass messages to |ins-completion-menu|.
+set shortmess+=c
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+set signcolumn=yes
+
 "--------------------插件管理--------------------
 
 call plug#begin()
@@ -44,6 +55,9 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 
+" Markdown 预览插件
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+
 " 自动完成
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
@@ -62,6 +76,7 @@ Plug 'tpope/vim-repeat'
 
 " git
 Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
 
 " snippets 代码库
 " snippets 引擎使用的是 coc.nvim 的 coc-snippets
@@ -94,8 +109,7 @@ set encoding=utf-8
 "设置写入文件时编码
 set fileencoding=utf-8
 
-"设置字体，字体中的空格要转义或用下划线代替，字体设置不当还曾导致全屏时下方和右
-"方出现空白，无法真正全屏，如把下面的字号改为11则出现上述情况
+"设置字体，字体中的空格要转义或用下划线代替
 if(g:iswindows==1)
     set guifont=等距更纱黑体_TC_LIGHT:h11
 elseif has("unix")
@@ -139,12 +153,21 @@ set shiftwidth=4
 "tab替换为空格
 set expandtab
 
+" 允许不保存切换buffer
+set hidden
 "不产生备份文件
 set nobackup
+set nowritebackup
 "不产生撤销文件
 set noundofile
 "不产生swp临时文件
 set noswapfile
+
+" Persistent undo
+"set undofile
+"set undodir=$HOME/.vim/undo
+"set undolevels=1000
+"set undoreload=10000
 
 "默认以双字节处理东亚字符
 if v:lang =~? '^\(zh\)\|\(ja\)\|\(ko\)'
@@ -204,8 +227,6 @@ command Vimrc e $HOME\\_vimrc
 command So source $HOME\\_vimrc
 " 新文件
 command E enew
-" 进入 Markdown 笔记目录
-command Note cd D:\git-repo\shenlin.ltd\source\_posts\
 
 "折叠代码中的 class、function 等代码块
 set foldmethod=indent
@@ -247,23 +268,13 @@ endfunction
 
 " 未实现不用回车直接触发功能
 "nnoremap gb :ls<CR>:buffer<Space>call GetNChar()<CR>
-nnoremap gb :ls<CR>:buffer<Space>
-nnoremap <C-n> :bnext<CR>
-nnoremap <C-p> :bprevious<CR>
+"nnoremap gb :ls<CR>:buffer<Space>
+nnoremap K :bnext<CR>
+nnoremap J :bprevious<CR>
 nnoremap <C-X> :bdelete<CR>
 
 " autowrite
 set autowrite
-
-" 允许不保存切换buffer
-set hidden
-
-" Persistent undo
-set undofile
-set undodir=$HOME/.vim/undo
-
-set undolevels=1000
-set undoreload=10000
 
 set backspace=indent,eol,start
 
@@ -289,10 +300,6 @@ imap ’ '
 " https://github.com/asins/gvimfullscreen_win32
 " 将 gvimfullscreen.dll 复制到gvim安装目录下，与gvim.exe同目录
 " {{{ Win平台下窗口全屏组件 gvimfullscreen.dll
-" Alt + Enter 全屏切换
-" Shift + t 降低窗口透明度
-" Shift + y 加大窗口透明度
-" Shift + r 切换Vim是否总在最前面显示
 " Vim启动的时候自动使用当前颜色的背景色以去除Vim的白色边框
 if has('gui_running') && has('gui_win32') && has('libcall')
     let g:MyVimLib = 'gvimfullscreen.dll'
@@ -389,59 +396,21 @@ set laststatus=2  " Basic
 "
 "let g:go_def_mode='gopls'
 "let g:go_info_mode='gopls'
-"autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
+let g:go_list_type = "quickfix"
+autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
+autocmd FileType go nmap <leader>b  <Plug>(go-build)
+autocmd FileType go nmap <leader>r  <Plug>(go-run)
 "
 "}}}
 
 
 " coc.nvim================================================================={{{
 "
-" TextEdit might fail if hidden is not set.
-set hidden
 
-" Some servers have issues with backup files, see #649.
-set nobackup
-set nowritebackup
+"if (index(['go'], &filetype) >= 0)
 
 " Give more space for displaying messages. 状态栏高度
 "set cmdheight=2
-
-" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
-" delays and poor user experience.
-set updatetime=300
-
-" Don't pass messages to |ins-completion-menu|.
-set shortmess+=c
-
-" Always show the signcolumn, otherwise it would shift the text each time
-" diagnostics appear/become resolved.
-set signcolumn=yes
-
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
-
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
-" position. Coc only does snippet and additional edit on confirm.
-if has('patch8.1.1068')
-  " Use `complete_info` if your (Neo)Vim version supports it.
-  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-elseif (index(['go'], &filetype) >= 0)
-  imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-endif
 
 " Use `[g` and `]g` to navigate diagnostics
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
@@ -450,15 +419,18 @@ nmap <silent> ]g <Plug>(coc-diagnostic-next)
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
+"nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
+" Use D to show documentation in preview window.
+"let g:go_doc_keywordprg_enabled = 0
+"nnoremap <silent> D :call <SID>show_documentation()<CR>
 
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
+  elseif (index(['go'], &filetype) >= 0)
+    execute 'GoDoc '.expand('<cword>')
   else
     call CocAction('doHover')
   endif
@@ -519,61 +491,73 @@ command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organize
 " provide custom statusline: lightline.vim, vim-airline.
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
-" Mappings using CoCList:
-"nnoremap <silent> <space>g :<C-u>CocList --normal gstatus<CR>
-nnoremap <silent> ,g :<C-u>CocList<CR>
+"" Mappings using CoCList:
+""nnoremap <silent> <space>g :<C-u>CocList --normal gstatus<CR>
 nnoremap <silent> ,e :<C-u>CocList files<CR>
 nnoremap <silent> ,r :<C-u>CocList mru<CR>
-nnoremap <silent> <space>b :<C-u>CocList buffers<CR>
-" Show all diagnostics.
-nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
-" Manage extensions.
-nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
-" Show commands.
-nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document.
-nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols.
-nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
-" Resume latest coc list.
-nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+"nnoremap <silent> <space>b :<C-u>CocList buffers<CR>
+"nnoremap <silent> <space>g :<C-u>CocList<CR>
+"" Show all diagnostics.
+"nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+"" Manage extensions.
+"nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+"" Show commands.
+"nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+"" Find symbol of current document.
+"nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+"" Search workspace symbols.
+"nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+"" Do default action for next item.
+"nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+"" Do default action for previous item.
+"nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+"" Resume latest coc list.
+"nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
-"}}}
-
-
-" coc-snippets=========================================={{{
-"
-" Use <C-l> for trigger snippet expand.
-imap <C-l> <Plug>(coc-snippets-expand)
-
-" Use <C-j> for select text for visual placeholder of snippet.
-vmap <C-j> <Plug>(coc-snippets-select)
-
-" Use <C-j> for jump to next placeholder, it's default of coc.nvim
-let g:coc_snippet_next = '<c-j>'
-
-" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
-let g:coc_snippet_prev = '<c-k>'
-
-" Use <C-j> for both expand and jump (make expand higher priority.)
-imap <C-j> <Plug>(coc-snippets-expand-jump)
-
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? coc#_select_confirm() :
-      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
+function! SetupCommandAbbrs(from, to)
+  exec 'cnoreabbrev <expr> '.a:from
+        \ .' ((getcmdtype() ==# ":" && getcmdline() ==# "'.a:from.'")'
+        \ .'? ("'.a:to.'") : ("'.a:from.'"))'
 endfunction
 
+" Use :C to open coc config
+call SetupCommandAbbrs('C', 'CocConfig')
+call SetupCommandAbbrs('L', 'CocList')
+""}}}
+"endif
+
+" coc.nvim 自动补全========================================================={{{
+"
+" 插入模式下使用 <c-p> 强制触发补全: 
+inoremap <silent><expr> <c-p> coc#refresh()
+
+" 使用 <Tab><S-Tab> 在自动完成项中导航
+inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
+inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
+
+" 使用 <cr> 确认自动完成项
+"inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<cr>"
+" 在没有选中任何项时，回车则选中第一项
+"inoremap <silent><expr> <CR> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
+" 默认使用 <C-y> 确认自动完成项，可改为回车
+inoremap <silent><expr> <CR> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" 自动完成后关闭预览窗口
+autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+
+" Markdown 文件禁用补全，打中文稍快就出错
+autocmd FileType markdown let b:coc_suggest_disable = 1
+
+"}}}
+"
+" coc-snippets=========================================={{{
+"
+" 使用 <C-l> 快速扩展代码片段
+imap <C-l> <Plug>(coc-snippets-expand)
+
+" 使用 <Tab><S-Tab> 在代码片段中导航
 let g:coc_snippet_next = '<tab>'
+let g:coc_snippet_prev = '<S-tab>'
 
 "}}}
 
@@ -611,7 +595,7 @@ nnoremap <silent> <LocalLeader>a
 
 call defx#custom#option('_', {
             \ 'columns': 'indent:git:icons:filename',
-            \ 'winwidth': 35,
+            \ 'winwidth': 50,
             \ 'split': 'vertical',
             \ 'direction': 'topleft',
             \ 'show_ignored_files': 0,
@@ -694,4 +678,9 @@ cabbrev h vert h
 autocmd FileType json syntax match Comment +\/\/.\+$+
 
 " vim-gitgutter 比默认的命令增加了 zz
-nmap ]c <Plug>(G
+nmap ]c <Plug>(GitGutterNextHunk)zz
+nmap [c <Plug>(GitGutterPrevHunk)zz
+
+" 使用正则提取内容
+function! KeepLines(pattern)
+ 
