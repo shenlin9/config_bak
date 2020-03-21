@@ -12,76 +12,29 @@ SetTitleMatchMode, Fast
 ;  + Shift 
 ;  ~ 前缀，不屏蔽热键本身的功能
 
-; ==============程序加载时根据当前代理状态更改图标===========
-ServerAddr := "127.0.0.1:1088"
-
-OutputVar := ReadProxy()
-if (OutputVar = 1){
-    SetTrayIcon(ServerAddr)
-    SetScrollLockState, On
-} else {
-    SetTrayIcon("")
-    SetScrollLockState, Off
-}
-
 ; ================创建内存盘文件夹=================
 Run, %comspec% /c mkdir "z:\TEMP" "z:\Chrome" "z:\Download" "z:\FireFox" "z:\INetCache" "z:\360 Browser",,Hide
 
-; ================速盘急速版破解，自动更改日期和开始下载=================
-
-; ------今天实际日期--------
-Today = %A_YYYY%/%A_MM%/%A_DD%
-
-; ------昨天的日期--------
-Yesterday  = %A_Now%   ; 必须为 YYYYMMDDHH24MISS 格式才能使用下面的函数
-EnvAdd, Yesterday, -1, days
-FormatTime, Yesterday, %Yesterday%, ShortDate
-
-TheDate = %Today%
-
-; ------设置系统日期--------
-SetDate()
-{
-    global
-
-    if (TheDate = Today)
-        TheDate = %Yesterday%
-    else
-        TheDate = %Today%
-
-    RunWait, %comspec% /c date %TheDate%,,Hide
-    return
-}
-
-; ------启动程序自动开始下载--------
-DownLoad()
-{
-    SetDate()
-
-    Run,supan
-    WinWait,速盘 - 极速版
-    Sleep,100
-    Send {Click 650,123}
-    Send {Click 1493,239}
-    Send !{TAB}
-    Sleep,70000
-
-    IfWinExist,速盘 - 极速版
-    {
-        WinActivate
-        WinClose
-        Sleep,500
-        IfWinExist, Confirm
-            Send {Enter}
-        Sleep,1500
-        DownLoad()
-    }
-    return
-}
-
-;^\::DownLoad()
-
 ; =====================快速查看、禁用、启用 IE 代理==============================
+
+; ------代理服务器--------
+ServerAddr := "127.0.0.1:1088"
+UpdateIconLight()
+
+; ------定期读取代理状态--------
+SetTimer, UpdateIconLight, 5000
+
+; ------根据当前代理状态更改托盘图标和ScrollLock键灯光--------
+UpdateIconLight() {
+    OutputVar := ReadProxy()
+    if (OutputVar = 1){
+        SetTrayIcon(true)
+        SetScrollLockState, On
+    } else {
+        SetTrayIcon(false)
+        SetScrollLockState, Off
+    }
+}
 
 ; ------读取 IE 代理--------
 ReadProxy() {
@@ -96,16 +49,12 @@ SetProxy(Server) {
 }
 
 ; ------设置托盘图标--------
-SetTrayIcon(Server) {
-    if (Server = "") {
-        Menu, Tray, Icon, DirectLink.ico
-        Menu, Tray, Tip , Direct Link
-    } else {
+SetTrayIcon(UseAgent) {
+    if (UseAgent) {
         Menu, Tray, Icon, ProxyLink.ico
-        Menu, Tray, Tip , Proxy Server : %Server%
+    } else {
+        Menu, Tray, Icon, DirectLink.ico
     }
-    ; Menu, Tray, NoIcon     ;  隐藏托盘图标
-    ; Menu, Tray, Icon        ;  显示托盘图标
 }
 
 ; ------快捷键切换代理状态--------
@@ -118,10 +67,10 @@ GetKeyState, ScrollLockState, ScrollLock, T
 If ScrollLockState = D
 {
     SetProxy(ServerAddr)
-    SetTrayIcon(ServerAddr)
+    SetTrayIcon(true)
 } else {
     SetProxy("")
-    SetTrayIcon("")
+    SetTrayIcon(false)
 }
 return
 
@@ -132,7 +81,7 @@ Sleep,200
 Send !l
 return
 
-; ========================系统睡眠========================
+; ========================按一次关闭显示器，连按两次系统睡眠===================
 Pause::
 ;  检测热键的单次, 两次和三次按下. 这样允许热键根据您按下次数的多少
 ;  执行不同的操作：
@@ -148,15 +97,13 @@ return
 
 KeyWinC:
 SetTimer, KeyWinC, off
-if winc_presses = 1 ;  此键按下了一次.
+if winc_presses = 1 ;  此键按下了1次.
 {
     ;  关闭显示器
     SendMessage,0x112,0xF170,2,,Program Manager
 }
-else if winc_presses >= 2 ;  此键按下至少三次.
+else if winc_presses >= 2 ;  此键按下至少2次.
 {
-    ;  3 秒后休眠
-    Sleep, 3000
     Run, psshutdown.exe -d -t 0, ,Hide
 }
 ;  不论触发了上面的哪个动作, 都对 count 进行重置
@@ -170,11 +117,8 @@ return
 Capslock::ESC
 ESC::Capslock
 
-; ---右 Win 键运行对话框---
-; 只按 RWin 键则弹出运行框，但和其他键组合则不弹运行对话框
-; Make RWin a prefix by using it in front of "&" at least once.
-;RWin & F1::return
-RWin::#r
+;调用 listary
+RWin::^+=
 
 ; --左 Ctrl+单引号映射为 Alt+Tab
 <^'::AltTab
@@ -186,14 +130,16 @@ RWin::#r
 
 #IfWinActive, ahk_class TTOTAL_CMD
     ; 右键菜单
-    ,::Appskey
+    ;^l::Appskey
     ; 查看属性
-    .::send !{Enter}
+    ^.::send !{Enter}
     ; 直接映射为 Up，Down 失败，这种方式可以
     ^j::Send {Down}
     ^k::Send {Up}
     +j::Send, {Control Down}{Shift Down}{Tab}{Shift Up}{Ctrl Up}
     +k::Send, {Control Down}{Tab}{Ctrl Up}
+    ;
+    ^x::^w
 #IfWinActive
 
 ; ======================PotPlayer截屏快捷键==========================
@@ -210,6 +156,8 @@ RWin::#r
 #IfWinActive, ahk_class Chrome_WidgetWin_1
     +j::Send, {Control Down}{Shift Down}{Tab}{Shift Up}{Ctrl Up}
     +k::Send, {Control Down}{Tab}{Ctrl Up}
+    XButton1::^w
+    ;XButton2::msgbox,5
 #IfWinActive
 
 ; ---Everything---
@@ -218,8 +166,11 @@ RWin::#r
 ; ---firefox---
 ^2:: toggleWin("Mozilla Firefox") 
 
-; ---Movavi Video Editor---
-^3:: toggleWin("Movavi Video Editor")
+; --- Video Editor ---
+;^3::toggleWin("hk_class HwndWrapper[Video Editor Pro.exe;;ffad8897-f8d6-4976-85d3-d8c8db1cc790]")
+;toggleWin("TechSmith Camtasia 2019")
+^3::toggleWin("ahk_exe Video Editor Pro.exe")
+
 
 ;---Total Commander---
 ^4:: toggleWin("ahk_class TTOTAL_CMD")
@@ -243,7 +194,11 @@ RWin::#r
 ;^0:: toggleWin("")
 
 ; ---GoldenDict---
-^i::^!+j
+;^i::^!+j
+
+; ---沙拉查词---
+;^i:: toggleWin(Saladict Dict Panel)
+
 
 #IfWinActive, ahk_exe GoldenDict.exe
 ; 使用逗号直接粘贴剪贴板内容查询
@@ -290,11 +245,20 @@ RWin::#r
     d::^!s
 #IfWinActive
 
+; ===============================沙拉查词=======================================
+
+#IfWinActive, Saladict Dict Panel
+    ^i::
+    Capslock::^w
+#IfWinActive
+
 ; ===============================移动窗口=======================================
 
 #If WinActive("ahk_exe Everything.exe")
 or WinActive("ahk_exe GoldenDict.exe")
 or WinActive("ahk_class YodaoMainWndClass")
+or WinActive("ahk_exe uTools.exe")
+or WinActive("Saladict Dict Panel")
     ^k::moveWindow("Up")
     ^j::moveWindow("Down")
     ^h::moveWindow("Left")
@@ -305,9 +269,9 @@ or WinActive("ahk_class YodaoMainWndClass")
 
 moveWindow(Direct)
 {
-    WinGetClass, class, A
+    WinGet,WinID,ID,A
 
-    WinGetPos, x, y, Width, Height, ahk_class %class%
+    WinGetPos, x, y, Width, Height, ahk_id %WinID%
     Width := 300
     Height := 300
 
@@ -331,7 +295,7 @@ moveWindow(Direct)
     else if ( (y + Height) > A_ScreenHeight)
         y := A_ScreenHeight - Height
 
-    WinMove, ahk_class %class%, , %x%, %y%
+    WinMove, ahk_id %WinID%, , %x%, %y%
 
     return
 }
@@ -362,7 +326,7 @@ toggleWin(win_title)
     return
 }
 
-; ===============================鼠标滚轮调整音量===================================
+; ===============================系统托盘处使用鼠标滚轮调整音量================
 
 ~WheelUp::
 if (existclass("ahk_class Shell_TrayWnd")=1)
@@ -381,10 +345,26 @@ Return
 
 existclass(class)
 {
-    MouseGetPos,,,win
+    MouseGetPos,x,y,win
+
     WinGet,winid,id,%class%
     if win = %winid%
-        Return,1
+        if x > 2280
+            Return,1
+        else
+            Return,0
     Else
         Return,0
 }
+
+;=============================test=========================================
+
+~LControl::
+if (A_PriorHotkey <> "~LControl" or A_TimeSincePriorHotkey > 400)
+{
+    ; Too much time between presses, so this isn't a double-press.
+    KeyWait, LControl
+    return
+}
+MsgBox You double-pressed the right control key.
+return

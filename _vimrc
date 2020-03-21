@@ -227,6 +227,7 @@ command Vimrc e $HOME\\_vimrc
 command So source $HOME\\_vimrc
 " 新文件
 command E enew
+command S Startify
 
 "折叠代码中的 class、function 等代码块
 set foldmethod=indent
@@ -683,4 +684,28 @@ nmap [c <Plug>(GitGutterPrevHunk)zz
 
 " 使用正则提取内容
 function! KeepLines(pattern)
- 
+    let pattern = a:pattern
+    let hits = []
+    exec '%s/' . pattern . '/\=add(hits, submatch(0))/ge'
+    let str = join(hits, "\n") . "\n"
+    %d
+    put! = str
+endfunction
+command! -nargs=1 KeepLines call KeepLines(<f-args>)
+
+" Markdown 插件 ======================================================{{{
+"
+" plasticboy/vim-markdown
+autocmd FileType markdown let b:sleuth_automatic=0
+autocmd FileType markdown set conceallevel=0
+autocmd FileType markdown normal zR
+
+let g:vim_markdown_frontmatter=1
+
+" iamcco/markdown-preview 
+nmap <M-m> <Plug>MarkdownPreviewToggle
+"
+"}}}
+"
+command Medicine cd d:\git-repo\Common-sense-of-life
+command Note cd d:\git-repo\shenlin.ltd\source\_posts
