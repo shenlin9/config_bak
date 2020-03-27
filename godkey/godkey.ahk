@@ -126,20 +126,21 @@ RWin::^+=
 ; --左 Ctrl+分号映射为 Alt+ESC
 <^;::!ESC
 
+; 使用 ctrl+j ctrl+k 代替上下方向键
+; 直接映射为 Up，Down 失败，这种方式可以
+^j::Send {Down}
+^k::Send {Up}
+
 ; ======================TotalCmd==========================
 
 #IfWinActive, ahk_class TTOTAL_CMD
     ; 右键菜单
-    ;^l::Appskey
+    ^l::MouseClick, right
     ; 查看属性
     ^.::send !{Enter}
     ; 直接映射为 Up，Down 失败，这种方式可以
     ^j::Send {Down}
     ^k::Send {Up}
-    +j::Send, {Control Down}{Shift Down}{Tab}{Shift Up}{Ctrl Up}
-    +k::Send, {Control Down}{Tab}{Ctrl Up}
-    ;
-    ^x::^w
 #IfWinActive
 
 ; ======================PotPlayer截屏快捷键==========================
@@ -153,9 +154,8 @@ RWin::^+=
 ; ---Chromium---
 ^h:: toggleWin("Google Chrome")
 
-#IfWinActive, ahk_class Chrome_WidgetWin_1
-    +j::Send, {Control Down}{Shift Down}{Tab}{Shift Up}{Ctrl Up}
-    +k::Send, {Control Down}{Tab}{Ctrl Up}
+#If WinActive("ahk_class Chrome_WidgetWin_1")
+or WinActive("ahk_class MozillaWindowClass")
     XButton1::^w
     ;XButton2::msgbox,5
 #IfWinActive
@@ -167,10 +167,10 @@ RWin::^+=
 ^2:: toggleWin("Mozilla Firefox") 
 
 ; --- Video Editor ---
-;^3::toggleWin("hk_class HwndWrapper[Video Editor Pro.exe;;ffad8897-f8d6-4976-85d3-d8c8db1cc790]")
-;toggleWin("TechSmith Camtasia 2019")
-^3::toggleWin("ahk_exe Video Editor Pro.exe")
-
+^3::
+toggleWin("ahk_class VIDEOEDITOR")
+toggleWin("TechSmith Camtasia")
+return
 
 ;---Total Commander---
 ^4:: toggleWin("ahk_class TTOTAL_CMD")
@@ -250,6 +250,16 @@ RWin::^+=
 #IfWinActive, Saladict Dict Panel
     ^i::
     Capslock::^w
+#IfWinActive
+
+; ===============================移动窗口=======================================
+
+#If WinActive("ahk_class ATLWIN_JISUPDF_MIAN")
+or WinActive("ahk_class TTOTAL_CMD")
+or WinActive("ahk_class Chrome_WidgetWin_1")
+or WinActive("ahk_class MozillaWindowClass")
+    +j::Send, {Control Down}{Shift Down}{Tab}{Shift Up}{Ctrl Up}
+    +k::Send, {Control Down}{Tab}{Ctrl Up}
 #IfWinActive
 
 ; ===============================移动窗口=======================================
@@ -357,14 +367,3 @@ existclass(class)
         Return,0
 }
 
-;=============================test=========================================
-
-~LControl::
-if (A_PriorHotkey <> "~LControl" or A_TimeSincePriorHotkey > 400)
-{
-    ; Too much time between presses, so this isn't a double-press.
-    KeyWait, LControl
-    return
-}
-MsgBox You double-pressed the right control key.
-return

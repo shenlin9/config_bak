@@ -1,0 +1,592 @@
+{
+   "actions": {
+      "base": [ "{44eca225-98f6-489c-b97a-03163e83ce7e}", "{b7e56ba3-2042-4ff7-a499-62d861e2aa69}", "{6ee550e1-8ef3-4025-a673-88d96a48bbc8}", "{81927428-1534-44c4-88aa-f119f682339d}", "{284ecbe8-1ef2-49c9-bd93-f7025519402b}", "{35c0504f-b1a8-4c82-8e32-aa1e68520972}", "{4025f3ed-47e1-4212-9276-de3fbb0786e8}", "{6d2b6aa4-67e5-4dd6-b7ea-c4b30ae8c9a5}", "{edf97959-2c24-47ed-bd7b-3dc5e76b7752}", "{170e8be1-80fa-4afb-a6d7-7bcb1a1eba19}", "{112b153c-23ec-463a-bcae-9eeba93802d8}", "{7971bb91-830f-474b-a976-8bfc9fc001d1}", "{06457068-a652-4c0d-9c3c-a4056dde1f67}", "{e5d9da93-b1dd-4401-8ba1-25f10fca9f93}", "{f56585dd-3f13-4305-8f00-e5599e3f20fe}" ],
+      "items": [ {
+         "command_string": "_action_open",
+         "enabled": false,
+         "guid": "{112b153c-23ec-463a-bcae-9eeba93802d8}",
+         "hotkey": 20226,
+         "keyword": "",
+         "type": "builtin"
+      }, {
+         "command_string": "_action_open_folder",
+         "enabled": true,
+         "guid": "{44eca225-98f6-489c-b97a-03163e83ce7e}",
+         "hotkey": 3330,
+         "keyword": "",
+         "type": "builtin"
+      }, {
+         "enabled": true,
+         "guid": "{06457068-a652-4c0d-9c3c-a4056dde1f67}",
+         "hotkey": 17666,
+         "keyword": "",
+         "param": " \"{action_path}\"",
+         "path": "C:\\Program Files (x86)\\Vim\\vim82\\gvim.exe",
+         "run_as_admin": false,
+         "slient": false,
+         "title": "Edit with Vim",
+         "type": "custom"
+      }, {
+         "enabled": true,
+         "guid": "",
+         "hotkey": 19970,
+         "keyword": "notepad",
+         "param": "\"{action_path}\"",
+         "path": "notepad.exe",
+         "run_as_admin": false,
+         "slient": false,
+         "title": "\u7528\u8BB0\u4E8B\u672C\u6253\u5F00",
+         "type": "custom"
+      }, {
+         "command_string": "_action_send_to",
+         "enabled": false,
+         "guid": "{b7e56ba3-2042-4ff7-a499-62d861e2aa69}",
+         "hotkey": 21249,
+         "keyword": "",
+         "type": "builtin"
+      }, {
+         "command_string": "_action_set_keyword",
+         "enabled": false,
+         "guid": "{6ee550e1-8ef3-4025-a673-88d96a48bbc8}",
+         "hotkey": 0,
+         "keyword": "",
+         "type": "builtin"
+      }, {
+         "command_string": "_action_copy",
+         "enabled": false,
+         "guid": "{81927428-1534-44c4-88aa-f119f682339d}",
+         "hotkey": 17154,
+         "keyword": "",
+         "type": "builtin"
+      }, {
+         "command_string": "_action_cut",
+         "enabled": false,
+         "guid": "{284ecbe8-1ef2-49c9-bd93-f7025519402b}",
+         "hotkey": 0,
+         "keyword": "",
+         "type": "builtin"
+      }, {
+         "command_string": "_action_copy_path",
+         "enabled": true,
+         "guid": "{35c0504f-b1a8-4c82-8e32-aa1e68520972}",
+         "hotkey": 17156,
+         "keyword": "",
+         "type": "builtin"
+      }, {
+         "command_string": "_action_copy_folder_path",
+         "enabled": false,
+         "guid": "{4025f3ed-47e1-4212-9276-de3fbb0786e8}",
+         "hotkey": 0,
+         "keyword": "",
+         "type": "builtin"
+      }, {
+         "command_string": "_action_open_with",
+         "enabled": false,
+         "guid": "{6d2b6aa4-67e5-4dd6-b7ea-c4b30ae8c9a5}",
+         "hotkey": 20225,
+         "keyword": "",
+         "type": "builtin"
+      }, {
+         "command_string": "_action_copy_to_current_folder",
+         "enabled": false,
+         "guid": "{edf97959-2c24-47ed-bd7b-3dc5e76b7752}",
+         "hotkey": 0,
+         "keyword": "",
+         "type": "builtin"
+      }, {
+         "command_string": "_action_move_to_current_folder",
+         "enabled": false,
+         "guid": "{170e8be1-80fa-4afb-a6d7-7bcb1a1eba19}",
+         "hotkey": 0,
+         "keyword": "",
+         "type": "builtin"
+      }, {
+         "enabled": false,
+         "guid": "{7971bb91-830f-474b-a976-8bfc9fc001d1}",
+         "hotkey": 0,
+         "keyword": "",
+         "param": "\"{action_path}\"",
+         "path": "C:\\Program Files (x86)\\Notepad++\\notepad++.exe",
+         "run_as_admin": false,
+         "slient": false,
+         "title": "Edit with Notepad++",
+         "type": "custom"
+      }, {
+         "enabled": false,
+         "guid": "{e5d9da93-b1dd-4401-8ba1-25f10fca9f93}",
+         "hotkey": 0,
+         "keyword": "",
+         "param": "\"{action_path}\"",
+         "path": "atom.cmd",
+         "run_as_admin": false,
+         "slient": false,
+         "title": "Edit with Atom",
+         "type": "custom"
+      }, {
+         "enabled": false,
+         "guid": "{f56585dd-3f13-4305-8f00-e5599e3f20fe}",
+         "hotkey": 0,
+         "keyword": "",
+         "param": "/K \"cd /d \"{action_path}\" & \"C:\\Program Files (x86)\\Git\\bin\\sh.exe\" --login\"",
+         "path": "cmd.exe",
+         "run_as_admin": false,
+         "slient": false,
+         "title": "Git Bash",
+         "type": "custom"
+      } ]
+   },
+   "app_settings": {
+      "by_path": [ {
+         "config": {
+
+         },
+         "path": "C:\\Program Files (x86)\\Meld\\Meld.exe"
+      } ],
+      "by_type": {
+         "explorer": {
+            "toolbar_position": 6
+         },
+         "total_cmd": {
+            "toolbar_position": 6
+         }
+      }
+   },
+   "appearance": {
+      "theme": {
+
+      }
+   },
+   "check_update": {
+      "last_check_local_version": "5.00.2843",
+      "last_check_time": "13154776599150889"
+   },
+   "general": {
+      "check_updates": false,
+      "default_file_manager": {
+         "param": "/O /T \"%1\"",
+         "path": "C:\\Users\\T460P\\AppData\\Local\\TotalCMD64\\Totalcmd64.exe"
+      },
+      "language_file": "zh-CN.ini",
+      "select_last_opened_file_in_filedlg": true,
+      "set_focus_to_xp_explorer": false
+   },
+   "history": {
+      "track_history": false
+   },
+   "hotkey": {
+      "enter_actions": 19458,
+      "hit_ctrl_twice_hotkey": false,
+      "main": 47878,
+      "next_item": 18946,
+      "previous_item": 19202
+   },
+   "keywords": {
+      "builtin_commands": [  ],
+      "custom_commands": [ {
+         "enabled": false,
+         "guid": "{7313132d-cc4b-4f04-94a1-030dc2db5413}"
+      }, {
+         "enabled": false,
+         "guid": "{bddf0f57-c6f4-4504-af56-06cff3dcffae}"
+      }, {
+         "enabled": false,
+         "guid": "{945277a1-858f-4bc8-879a-db3aa926c6e1}"
+      }, {
+         "enabled": false,
+         "guid": "{1bba6227-4dcd-40d9-bfc1-064c280e3b4a}"
+      }, {
+         "enabled": false,
+         "guid": "{8b65b236-49ac-422a-918c-5e66accd0a2c}"
+      }, {
+         "enabled": false,
+         "guid": "{ab25fbca-fe9e-4ca8-9ced-80840ceb2078}"
+      }, {
+         "description": "search word with goldenDict",
+         "display_title": "GoldenDict",
+         "enabled": false,
+         "keyword": "gd",
+         "only_show_in_launcher": false,
+         "param": "{query}",
+         "path": "D:\\Install-Packages\\GoldenDict\\GoldenDict-1.5.0-RC2-372-gc3ff15f_(QT_5123)(64bit)\\GoldenDict.exe",
+         "run_as_admin": false,
+         "slient": false,
+         "working_dir": ""
+      }, {
+         "description": "\u6587\u4EF6\u540D\u5F88\u968F\u610F\u662F\u4E3A\u4E86\u907F\u514D\u8986\u76D6\u6389\u5DF2\u5B58\u5728\u7684\u6587\u4EF6",
+         "display_title": "\u521B\u5EFA\u65B0 Markdown \u6587\u4EF6",
+         "enabled": true,
+         "keyword": "touch md",
+         "only_show_in_launcher": false,
+         "param": "/c type nul\u003E\u6211\u662F\u65B0\u7684Markdown\u6587\u4EF6\u54C8\u54C8\u54C8.md",
+         "path": "cmd.exe",
+         "run_as_admin": true,
+         "slient": true,
+         "working_dir": ""
+      } ],
+      "folder": [  ],
+      "web_search": [ {
+         "enabled": false,
+         "guid": "{dd896809-2af4-405b-834f-45816615e3e3}"
+      }, {
+         "enabled": false,
+         "guid": "{5ac62036-62aa-49d3-866b-d041bc7b1b76}"
+      }, {
+         "enabled": false,
+         "guid": "{4ed886fb-1df0-4fd0-abc1-810fc180e647}"
+      }, {
+         "guid": "{5014b42a-884d-40d3-835d-69079dd9fc51}",
+         "keyword": "yt"
+      }, {
+         "enabled": false,
+         "guid": "{95147e79-6274-4127-98bb-09d9ffa2a39a}"
+      }, {
+         "enabled": false,
+         "guid": "{610a486d-0028-4739-8eb6-50f5247c918f}"
+      }, {
+         "guid": "{c78295a6-2cf8-4569-bf42-33f1e5c030d7}",
+         "url": "https://zh.wikipedia.org/wiki/Special:Search/{query}"
+      }, {
+         "enabled": false,
+         "guid": "{2db0261a-1114-4c8d-8cc8-62a89aeb1a35}"
+      }, {
+         "enabled": false,
+         "guid": "{455e1dc4-5e38-4b00-85da-d0bf46c68f4f}"
+      }, {
+         "enabled": false,
+         "guid": "{1744aa0c-751a-495f-aac5-6910e7406229}"
+      }, {
+         "enabled": true,
+         "icon": {
+            "png_data": "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",
+            "type": "png_data"
+         },
+         "keyword": "tb",
+         "title": "\u6DD8\u5B9D\u641C\u7D22",
+         "url": "https://s.taobao.com/search?q={query}&sort=sale-desc"
+      } ]
+   },
+   "launch_apps": {
+      "file_extensions": "lnk;exe;bat;",
+      "search_folders": {
+         "default_overrides": [ {
+            "enabled": false,
+            "path": "%start_menu%"
+         }, {
+            "enabled": false,
+            "path": "%common_start_menu%"
+         }, {
+            "enabled": false,
+            "path": "%desktop%"
+         }, {
+            "enabled": false,
+            "path": "%common_desktop%"
+         }, {
+            "enabled": false,
+            "path": "%quick_launch%"
+         }, {
+            "enabled": false,
+            "path": "%default_quick_launch%"
+         } ],
+         "user": [ {
+            "enabled": true,
+            "path": "D:\\Install-Packages\\path\\"
+         }, {
+            "enabled": false,
+            "path": "C:\\Users\\T460P\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\"
+         } ]
+      },
+      "search_store_apps": false
+   },
+   "menu_lists": {
+      "items": [ {
+         "id": 10,
+         "root_item": {
+            "items": [ {
+               "anchor": "submenu_favorite",
+               "items": [ {
+                  "anchor": "menu_list_tc_fav_menu",
+                  "id": 400,
+                  "type": "menu_list"
+               }, {
+                  "anchor": "menu_list_favorite_global",
+                  "id": 100,
+                  "type": "menu_list"
+               }, {
+                  "anchor": "menu_list_favorite_application",
+                  "id": 101,
+                  "type": "menu_list"
+               } ],
+               "type": "submenu"
+            }, {
+               "anchor": "submenu_recent",
+               "items": [ {
+                  "anchor": "menu_list_recent",
+                  "id": 200,
+                  "type": "menu_list"
+               } ],
+               "type": "submenu"
+            }, {
+               "anchor": "submenu_smart_commands",
+               "items": [ {
+                  "anchor": "menu_list_smart_commands",
+                  "id": 300,
+                  "type": "menu_list"
+               } ],
+               "type": "submenu"
+            } ],
+            "type": "submenu"
+         }
+      }, {
+         "id": 11,
+         "root_item": {
+            "items": [ {
+               "anchor": "menu_list_tc_fav_menu",
+               "id": 400,
+               "type": "menu_list"
+            }, {
+               "anchor": "menu_list_favorite_global",
+               "id": 100,
+               "type": "menu_list"
+            }, {
+               "anchor": "separator",
+               "type": "separator"
+            }, {
+               "anchor": "submenu_recent",
+               "items": [ {
+                  "anchor": "menu_list_recent",
+                  "id": 200,
+                  "type": "menu_list"
+               } ],
+               "type": "submenu"
+            }, {
+               "anchor": "separator",
+               "type": "separator"
+            }, {
+               "anchor": "command_OpenedFolders",
+               "command": "_OpenedFolders",
+               "type": "command"
+            }, {
+               "anchor": "submenu_smart_commands",
+               "items": [ {
+                  "anchor": "menu_list_smart_commands",
+                  "id": 300,
+                  "type": "menu_list"
+               } ],
+               "type": "submenu"
+            }, {
+               "anchor": "command_Options",
+               "command": "_Options",
+               "type": "command"
+            } ],
+            "type": "submenu"
+         }
+      }, {
+         "id": 100,
+         "root_item": {
+            "items": [  ],
+            "type": "submenu"
+         }
+      }, {
+         "id": 300,
+         "root_item": {
+            "items": [ {
+               "anchor": "command_QuickSwitch",
+               "command": "_QuickSwitch",
+               "type": "command"
+            }, {
+               "anchor": "command_OpenSelectedFile",
+               "command": "_OpenSelectedFile",
+               "type": "command"
+            }, {
+               "anchor": "command_OpenedFolders",
+               "command": "_OpenedFolders",
+               "type": "command"
+            }, {
+               "anchor": "separator",
+               "type": "separator"
+            }, {
+               "anchor": "command_Explore",
+               "command": "_Explore",
+               "type": "command"
+            }, {
+               "anchor": "command_Cmd",
+               "command": "_Cmd",
+               "type": "command"
+            }, {
+               "anchor": "command_CopyFolderPath",
+               "command": "_CopyFolderPath",
+               "type": "command"
+            }, {
+               "anchor": "command_CopyFilePaths",
+               "command": "_CopyFilePaths",
+               "type": "command"
+            }, {
+               "anchor": "command_GoToAppFolder",
+               "command": "_GoToAppFolder",
+               "type": "command"
+            }, {
+               "anchor": "command_ExploreAppFolder",
+               "command": "_ExploreAppFolder",
+               "type": "command"
+            }, {
+               "anchor": "command_ExportToExcel",
+               "command": "_ExportToExcel",
+               "type": "command"
+            }, {
+               "anchor": "separator",
+               "type": "separator"
+            }, {
+               "anchor": "command_ToggleFileExt",
+               "command": "_ToggleFileExt",
+               "type": "command"
+            }, {
+               "anchor": "command_ToggleHidden",
+               "command": "_ToggleHidden",
+               "type": "command"
+            }, {
+               "anchor": "separator",
+               "type": "separator"
+            }, {
+               "anchor": "command_DisableListary",
+               "command": "_DisableListary",
+               "type": "command"
+            }, {
+               "anchor": "separator",
+               "type": "separator"
+            }, {
+               "anchor": "command_Options",
+               "command": "_Options",
+               "type": "command"
+            } ],
+            "type": "submenu"
+         }
+      }, {
+         "id": 500,
+         "root_item": {
+            "items": [ {
+               "anchor": "menu_list_favorite_global",
+               "id": 100,
+               "type": "menu_list"
+            }, {
+               "anchor": "separator",
+               "type": "separator"
+            }, {
+               "anchor": "submenu_recent",
+               "items": [ {
+                  "anchor": "menu_list_recent",
+                  "id": 200,
+                  "type": "menu_list"
+               } ],
+               "type": "submenu"
+            }, {
+               "anchor": "separator",
+               "type": "separator"
+            }, {
+               "anchor": "command_Options",
+               "command": "_Options",
+               "type": "command"
+            } ],
+            "type": "submenu"
+         }
+      }, {
+         "id": 501,
+         "root_item": {
+            "items": [ {
+               "anchor": "command_Options",
+               "command": "_Options",
+               "type": "command"
+            }, {
+               "anchor": "separator",
+               "type": "separator"
+            }, {
+               "anchor": "command_Tutorial",
+               "command": "_Tutorial",
+               "type": "command"
+            }, {
+               "anchor": "command_OnlineHelp",
+               "command": "_OnlineHelp",
+               "type": "command"
+            }, {
+               "anchor": "command_CheckUpdates",
+               "command": "_CheckUpdates",
+               "type": "command"
+            }, {
+               "anchor": "command_About",
+               "command": "_About",
+               "type": "command"
+            }, {
+               "anchor": "separator",
+               "type": "separator"
+            }, {
+               "anchor": "command_Exit",
+               "command": "_Exit",
+               "type": "command"
+            } ],
+            "type": "submenu"
+         }
+      } ],
+      "version": 0
+   },
+   "pro_license": {
+      "email": "soft@instant-demo.com",
+      "name": "Mike Rountree",
+      "regcode": "JE4V8T3M96PWT4SUCNZNVZ37XKLBU2QWN64LEJQ3VHY7MPL6KY2R5SQZ76QFFTKPVVE8JBVEAME8MMBRHRGF2P6MAJG7ZSQYMUY2PGTQ2EG3W2YHTU2CFWL7SE6THU3QTAL3U894S2BWA9629EFCXYYYG3S65WEQ5R234G26AT52UWD27PNENP4GR2EKKDK6"
+   },
+   "projects": {
+      "items": [ {
+         "keyword": "md",
+         "name": "Markdown \u7B14\u8BB0",
+         "path": "D:\\git-repo\\shenlin.ltd\\source\\_posts"
+      }, {
+         "keyword": "bk",
+         "name": "\u53C2\u8003\u4E66\u7C4D",
+         "path": "D:\\good-good-study"
+      }, {
+         "keyword": "doc",
+         "name": "\u6211\u7684\u6587\u6863",
+         "path": "D:\\Documents"
+      }, {
+         "keyword": "md2",
+         "name": "\u4E2D\u533B",
+         "path": "D:\\git-repo\\Common-sense-of-life"
+      } ]
+   },
+   "search": {
+      "exclude": [ {
+         "type": "folder",
+         "value": "C:\\Users\\T460P\\sxssx\\"
+      }, {
+         "type": "folder",
+         "value": "C:\\Users\\T460P\\idle\\"
+      }, {
+         "type": "folder",
+         "value": "C:\\Users\\T460P\\.idler\\"
+      }, {
+         "type": "folder",
+         "value": "C:\\Users\\T460P\\sss\\"
+      }, {
+         "type": "folder",
+         "value": "D:\\Install-Packages\\sss\\"
+      }, {
+         "type": "filter",
+         "value": "DwnlData"
+      }, {
+         "type": "filter",
+         "value": "scaffolds"
+      }, {
+         "type": "filter",
+         "value": "node_models"
+      } ]
+   },
+   "status": {
+      "disk_search_started_successfully_last_time": true
+   },
+   "tip": {
+      "action_hotkey": false,
+      "tutorial_listary5": false
+   },
+   "version": 2,
+   "window_types": {
+
+   }
+}

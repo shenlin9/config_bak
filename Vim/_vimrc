@@ -270,8 +270,8 @@ endfunction
 " 未实现不用回车直接触发功能
 "nnoremap gb :ls<CR>:buffer<Space>call GetNChar()<CR>
 "nnoremap gb :ls<CR>:buffer<Space>
-nnoremap K :bnext<CR>
-nnoremap J :bprevious<CR>
+nnoremap <C-n> :bnext<CR>
+nnoremap <C-p> :bprevious<CR>
 nnoremap <C-X> :bdelete<CR>
 
 " autowrite
