@@ -24,16 +24,16 @@ set signcolumn=yes
 call plug#begin()
 
 " Vim 中文手册
-Plug 'yianwillis/vimcdoc'
+"Plug 'yianwillis/vimcdoc'
 
 " 目录树
-if has('nvim')
-  Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  Plug 'Shougo/defx.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
+""if has('nvim')
+"  Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
+"else
+"  Plug 'Shougo/defx.nvim'
+"  Plug 'roxma/nvim-yarp'
+"  Plug 'roxma/vim-hug-neovim-rpc'
+"endif
 
 " 开始界面
 Plug 'mhinz/vim-startify'
@@ -43,6 +43,9 @@ Plug 'morhetz/gruvbox'
 
 " 光标所在单词下面加下划线
 Plug 'itchyny/vim-cursorword'
+
+" 缩进对齐线
+Plug 'Yggdroot/indentLine'
 
 " 状态条和 buffer 条
 Plug 'itchyny/lightline.vim'
@@ -82,6 +85,12 @@ Plug 'tpope/vim-fugitive'
 " snippets 引擎使用的是 coc.nvim 的 coc-snippets
 " 使用 coc 自带的 CocInstall 功能安装
 Plug 'honza/vim-snippets'
+
+" vimwiki
+Plug 'vimwiki/vimwiki'
+
+" 显示缓冲区内容的上下文
+Plug 'wellle/context.vim'
 
 call plug#end()
 
@@ -192,6 +201,7 @@ highlight Cursor guifg=white guibg=black
 
 "设置文本自动换行宽度 textwidth
 set tw=80
+set linebreak
 "设置列宽提示 ColorColumn，+1 表示高亮 textwidth 后面的一列
 set cc=+1
 "改变 ColorColumn 默认颜色
@@ -349,6 +359,21 @@ endif
 
 
 " lightline setup ==========================================================={{{
+let g:lightline = {}
+let g:lightline.active = {
+    \ 'left': [ [ 'mode', 'paste' ],
+    \           [ 'readonly', 'filename', 'modified' ],
+    \           [ 'cocstatus'] ],
+    \ 'right': [ [ 'lineinfo' ],
+    \            [ 'percent' ],
+    \            [ 'fileformat', 'fileencoding', 'filetype' ] ] }
+let g:lightline.inactive = {
+    \ 'left': [ [ 'filename' ] ],
+    \ 'right': [ [ 'lineinfo' ],
+    \            [ 'percent' ] ] }
+let g:lightline.tabline = {
+    \ 'left': [ [ 'buffers' ] ],
+    \ 'right': [ [ 'close' ] ] }
 
 let g:lightline#bufferline#show_number  = 2
 let g:lightline#bufferline#number_map = {
@@ -361,13 +386,17 @@ let g:lightline#bufferline#modified = ' *'
 let g:lightline#bufferline#filename_modifier = ':t'
 "let g:lightline#bufferline#enable_devicons = 1
 
-let g:lightline                  = {}
-let g:lightline.tabline          = {'left': [['buffers']], 'right': [['close']]}
 let g:lightline.component_expand = {'buffers': 'lightline#bufferline#buffers'}
 let g:lightline.component_type   = {'buffers': 'tabsel'}
 
-autocmd BufWritePost,TextChanged,TextChangedI * call lightline#update()
+let g:lightline.component_function = {
+    \   'cocstatus': 'coc#status'
+    \ }
 
+autocmd BufWritePost,TextChanged,TextChangedI * call lightline#update()
+autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
+
+" lightline 的 bufferline 需要下列设置
 set showtabline=2
 if has('gui_running')
     set guioptions-=e " Don’t use GUI tabline
@@ -376,22 +405,6 @@ set laststatus=2  " Basic
 
 " }}}
 
-" coc-list lightline setup =================================================={{{
-"let g:lightline = {
-"\ 'colorscheme': 'wombat',
-"\ 'active': {
-"\   'left': [ [ 'mode', 'paste' ],
-"\             [ 'cocstatus', 'readonly', 'filename', 'modified' ] ]
-"\ },
-"\ 'component_function': {
-"\   'cocstatus': 'coc#status'
-"\ },
-"\ }
-"
-"autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
-
-" }}}
-"
 
 " vim-go==================================================================={{{
 "
@@ -403,7 +416,6 @@ autocmd FileType go nmap <leader>b  <Plug>(go-build)
 autocmd FileType go nmap <leader>r  <Plug>(go-run)
 "
 "}}}
-
 
 " coc.nvim================================================================={{{
 "
@@ -585,92 +597,92 @@ let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_toc_autofit = 1
 
 " 目录树 defx 依赖插件 roxma/nvim-yarp 需要
-let g:python3_host_prog = "C:/Python37/python.exe"
+"let g:python3_host_prog = "C:/Python37/python.exe"
 
 " 目录树 defx 设置，基本为官方文档的配置
-let g:maplocalleader=';'
-nnoremap <silent> <LocalLeader>e
-            \ :<C-u>Defx -resume -toggle -buffer-name=tab`tabpagenr()` <CR>
-nnoremap <silent> <LocalLeader>a
-            \ :<C-u>Defx -resume -buffer-name=tab`tabpagenr()` -search=`expand('%:p')`<CR>
-
-call defx#custom#option('_', {
-            \ 'columns': 'indent:git:icons:filename',
-            \ 'winwidth': 50,
-            \ 'split': 'vertical',
-            \ 'direction': 'topleft',
-            \ 'show_ignored_files': 0,
-            \ 'root_marker': '≡ ',
-            \ 'ignored_files':
-            \     '.mypy_cache,.pytest_cache,.git,.hg,.svn,.stversions'
-            \   . ',__pycache__,.sass-cache,*.egg-info,.DS_Store,*.pyc,*.swp'
-            \ })
-
-autocmd FileType defx call s:defx_my_settings()
-function! s:defx_my_settings() abort
-  " Define mappings
-  nnoremap <silent><buffer><expr> <CR>
-  \ defx#do_action('drop')  " 在右侧打开，open 则为当前窗口打开 
-  nnoremap <silent><buffer><expr> c
-  \ defx#do_action('copy')
-  nnoremap <silent><buffer><expr> m
-  \ defx#do_action('move')
-  nnoremap <silent><buffer><expr> p
-  \ defx#do_action('paste')
-  nnoremap <silent><buffer><expr> l
-  \ defx#do_action('open')
-  nnoremap <silent><buffer><expr> E
-  \ defx#do_action('open', 'vsplit')
-  nnoremap <silent><buffer><expr> P
-  \ defx#do_action('open', 'pedit')
-  nnoremap <silent><buffer><expr> o
-  \ defx#do_action('open_or_close_tree')
-  nnoremap <silent><buffer><expr> K
-  \ defx#do_action('new_directory')
-  nnoremap <silent><buffer><expr> N
-  \ defx#do_action('new_file')
-  nnoremap <silent><buffer><expr> M
-  \ defx#do_action('new_multiple_files')
-  nnoremap <silent><buffer><expr> C
-  \ defx#do_action('toggle_columns',
-  \                'mark:indent:icon:filename:type:size:time')
-  nnoremap <silent><buffer><expr> S
-  \ defx#do_action('toggle_sort', 'time')
-  nnoremap <silent><buffer><expr> d
-  \ defx#do_action('remove')
-  nnoremap <silent><buffer><expr> r
-  \ defx#do_action('rename')
-  nnoremap <silent><buffer><expr> !
-  \ defx#do_action('execute_command')
-  nnoremap <silent><buffer><expr> x
-  \ defx#do_action('execute_system')
-  nnoremap <silent><buffer><expr> yy
-  \ defx#do_action('yank_path')
-  nnoremap <silent><buffer><expr> .
-  \ defx#do_action('toggle_ignored_files')
-  nnoremap <silent><buffer><expr> ;
-  \ defx#do_action('repeat')
-  nnoremap <silent><buffer><expr> h
-  \ defx#do_action('cd', ['..'])
-  nnoremap <silent><buffer><expr> ~
-  \ defx#do_action('cd')
-  nnoremap <silent><buffer><expr> <Esc>
-  \ defx#do_action('quit')
-  nnoremap <silent><buffer><expr> <Space>
-  \ defx#do_action('toggle_select') . 'j'
-  nnoremap <silent><buffer><expr> *
-  \ defx#do_action('toggle_select_all')
-  nnoremap <silent><buffer><expr> j
-  \ line('.') == line('$') ? 'gg' : 'j'
-  nnoremap <silent><buffer><expr> k
-  \ line('.') == 1 ? 'G' : 'k'
-  nnoremap <silent><buffer><expr> <C-l>
-  \ defx#do_action('redraw')
-  nnoremap <silent><buffer><expr> <C-g>
-  \ defx#do_action('print')
-  nnoremap <silent><buffer><expr> cd
-  \ defx#do_action('change_vim_cwd')
-endfunction
+"let g:maplocalleader=';'
+"nnoremap <silent> <LocalLeader>e
+"            \ :<C-u>Defx -resume -toggle -buffer-name=tab`tabpagenr()` <CR>
+"nnoremap <silent> <LocalLeader>a
+"            \ :<C-u>Defx -resume -buffer-name=tab`tabpagenr()` -search=`expand('%:p')`<CR>
+"
+"call defx#custom#option('_', {
+"            \ 'columns': 'indent:git:icons:filename',
+"            \ 'winwidth': 50,
+"            \ 'split': 'vertical',
+"            \ 'direction': 'topleft',
+"            \ 'show_ignored_files': 0,
+"            \ 'root_marker': '≡ ',
+"            \ 'ignored_files':
+"            \     '.mypy_cache,.pytest_cache,.git,.hg,.svn,.stversions'
+"            \   . ',__pycache__,.sass-cache,*.egg-info,.DS_Store,*.pyc,*.swp'
+"            \ })
+"
+"autocmd FileType defx call s:defx_my_settings()
+"function! s:defx_my_settings() abort
+"  " Define mappings
+"  nnoremap <silent><buffer><expr> <CR>
+"  \ defx#do_action('drop')  " 在右侧打开，open 则为当前窗口打开 
+"  nnoremap <silent><buffer><expr> c
+"  \ defx#do_action('copy')
+"  nnoremap <silent><buffer><expr> m
+"  \ defx#do_action('move')
+"  nnoremap <silent><buffer><expr> p
+"  \ defx#do_action('paste')
+"  nnoremap <silent><buffer><expr> l
+"  \ defx#do_action('open')
+"  nnoremap <silent><buffer><expr> E
+"  \ defx#do_action('open', 'vsplit')
+"  nnoremap <silent><buffer><expr> P
+"  \ defx#do_action('open', 'pedit')
+"  nnoremap <silent><buffer><expr> o
+"  \ defx#do_action('open_or_close_tree')
+"  nnoremap <silent><buffer><expr> K
+"  \ defx#do_action('new_directory')
+"  nnoremap <silent><buffer><expr> N
+"  \ defx#do_action('new_file')
+"  nnoremap <silent><buffer><expr> M
+"  \ defx#do_action('new_multiple_files')
+"  nnoremap <silent><buffer><expr> C
+"  \ defx#do_action('toggle_columns',
+"  \                'mark:indent:icon:filename:type:size:time')
+"  nnoremap <silent><buffer><expr> S
+"  \ defx#do_action('toggle_sort', 'time')
+"  nnoremap <silent><buffer><expr> d
+"  \ defx#do_action('remove')
+"  nnoremap <silent><buffer><expr> r
+"  \ defx#do_action('rename')
+"  nnoremap <silent><buffer><expr> !
+"  \ defx#do_action('execute_command')
+"  nnoremap <silent><buffer><expr> x
+"  \ defx#do_action('execute_system')
+"  nnoremap <silent><buffer><expr> yy
+"  \ defx#do_action('yank_path')
+"  nnoremap <silent><buffer><expr> .
+"  \ defx#do_action('toggle_ignored_files')
+"  nnoremap <silent><buffer><expr> ;
+"  \ defx#do_action('repeat')
+"  nnoremap <silent><buffer><expr> h
+"  \ defx#do_action('cd', ['..'])
+"  nnoremap <silent><buffer><expr> ~
+"  \ defx#do_action('cd')
+"  nnoremap <silent><buffer><expr> <Esc>
+"  \ defx#do_action('quit')
+"  nnoremap <silent><buffer><expr> <Space>
+"  \ defx#do_action('toggle_select') . 'j'
+"  nnoremap <silent><buffer><expr> *
+"  \ defx#do_action('toggle_select_all')
+"  nnoremap <silent><buffer><expr> j
+"  \ line('.') == line('$') ? 'gg' : 'j'
+"  nnoremap <silent><buffer><expr> k
+"  \ line('.') == 1 ? 'G' : 'k'
+"  nnoremap <silent><buffer><expr> <C-l>
+"  \ defx#do_action('redraw')
+"  nnoremap <silent><buffer><expr> <C-g>
+"  \ defx#do_action('print')
+"  nnoremap <silent><buffer><expr> cd
+"  \ defx#do_action('change_vim_cwd')
+"endfunction
 
 " 命令别名帮助文件垂直分隔
 cabbrev h vert h
@@ -707,5 +719,26 @@ nmap <M-m> <Plug>MarkdownPreviewToggle
 "
 "}}}
 "
-command Medicine cd d:\git-repo\Common-sense-of-life
-command Note cd d:\git-repo\shenlin.ltd\source\_posts
+
+" 常用工作目录
+command TCM lcd d:\git-repo\Common-sense-of-life
+command IT lcd d:\git-repo\shenlin.ltd\source\_posts
+
+" 切换到 Buffer 时自动切换工作目录
+autocmd BufEnter * silent! lcd %:p:h
+
+" 帮助文件中的链接导航
+autocmd FileType help nmap <CR>  <C-]>
+autocmd FileType help nmap <BS>  <C-o>
+
+" 默认启用 wellle/context 上下文插件
+let g:context_enabled = 1
+
+" python 和 go 文件才使用缩进, json 文件中会不显示引号很烦人
+let g:indentLine_fileType = ['python', 'go']
+" indentLine 颜色不使用 colorscheme 的方案
+let g:indentLine_setColors = 1
+
+" vimwiki 快捷键
+nmap <Leader>wk <Plug>VimwikiIndex
+autocmd FileType vimwiki nmap <Space> <Plug>VimwikiToggleListItem

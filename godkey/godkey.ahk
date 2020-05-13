@@ -1,6 +1,7 @@
 #Persistent
 #SingleInstance force
 
+FileEncoding, UTF-8
 DetectHiddenWindows, On
 SetTitleMatchMode, 2
 SetTitleMatchMode, Fast
@@ -163,13 +164,17 @@ or WinActive("ahk_class MozillaWindowClass")
 ; ---Everything---
 ^1::^!0
 
-; ---firefox---
-^2:: toggleWin("Mozilla Firefox") 
+; ---firefox, Tor---
+^2::
+toggleWin("Mozilla Firefox") 
+toggleWin("Tor Browser")
+return
 
 ; --- Video Editor ---
 ^3::
 toggleWin("ahk_class VIDEOEDITOR")
 toggleWin("TechSmith Camtasia")
+toggleWin("ahk_class Premiere Pro")
 return
 
 ;---Total Commander---
@@ -201,7 +206,7 @@ return
 
 
 #IfWinActive, ahk_exe GoldenDict.exe
-; 使用逗号直接粘贴剪贴板内容查询
+; 使用单引号直接粘贴剪贴板内容查询
 ~':: Send {BackSpace}^v{Enter}
 ; 朗读发音
 /::!s
@@ -247,9 +252,14 @@ return
 
 ; ===============================沙拉查词=======================================
 
-#IfWinActive, Saladict Dict Panel
-    ^i::
+#IfWinActive, ahk_class Chrome_WidgetWin_1
     Capslock::^w
+    ;WinGetTitle, Title, A
+    ;; 中文"沙拉查词"提示非法字符
+    ;if ("沙拉查词" in %Title%) {
+    ;    msgbox,aaa
+    ;    Send, ^w
+    ;}
 #IfWinActive
 
 ; ===============================移动窗口=======================================
@@ -365,5 +375,23 @@ existclass(class)
             Return,0
     Else
         Return,0
+}
+
+;---遍历窗口----
+^9::show_all_win()
+
+show_all_win()
+{
+    DetectHiddenWindows, Off
+    WinGet, id, List,,, Program Manager
+    Loop, %id%
+    {
+        this_id := id%A_Index%
+        WinActivate, ahk_id %this_id%
+        WinGetClass, this_class, ahk_id %this_id%
+        WinGetTitle, this_title, ahk_id %this_id%
+        MsgBox, 4, , Visiting All Windows`n%A_Index% of %id%`nahk_id %this_id%`nahk_class %this_class%`n%this_title%`n`nContinue?
+        IfMsgBox, NO, break
+    }
 }
 
