@@ -10,7 +10,7 @@ filetype plugin indent on
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " delays and poor user experience.
-set updatetime=300
+set updatetime=2000
 
 " Don't pass messages to |ins-completion-menu|.
 set shortmess+=c
@@ -52,7 +52,7 @@ Plug 'itchyny/lightline.vim'
 Plug 'mengelbrecht/lightline-bufferline'
 
 " Go 引擎 
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+"Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 " Markdown 语法高亮,第一个是依赖插件
 Plug 'godlygeek/tabular'
@@ -70,6 +70,9 @@ Plug 'hotoo/pangu.vim'
 " 代码对齐
 Plug 'junegunn/vim-easy-align'
 
+" 快速定位
+Plug 'easymotion/vim-easymotion'
+
 " 括号、引号等自动配对
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-surround'
@@ -77,8 +80,11 @@ Plug 'tpope/vim-surround'
 " . 的增强版
 Plug 'tpope/vim-repeat'
 
+" 注释插件
+Plug 'tpope/vim-commentary'
+
 " git
-Plug 'airblade/vim-gitgutter'
+" Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 
 " snippets 代码库
@@ -91,6 +97,12 @@ Plug 'vimwiki/vimwiki'
 
 " 显示缓冲区内容的上下文
 Plug 'wellle/context.vim'
+
+" 拼音首字母搜索
+Plug 'jianshanbushishan/vim-PYSearch'
+
+" 自动保存
+Plug 'vim-scripts/vim-auto-save'
 
 call plug#end()
 
@@ -212,6 +224,8 @@ set fo-=l
 set fo+=t
 set fo+=m
 set fo+=M
+set fo+=n
+set fo+=j
 
 "复制粘贴
 nmap <C-Insert> ^v$h"*y
@@ -226,17 +240,12 @@ nmap <C-q> <Nop>
 nmap <C-Up> <Nop>
 nmap <C-Down> <Nop>
 
-"注释，还有多行注释问题
-nmap cm/ I// <Esc>
-nmap cm# I# <Esc>
-nmap <C-/> I// <Esc>
-
 " 编辑配置文件
 command Vimrc e $HOME\\_vimrc
 " 重新加载配置文件
 command So source $HOME\\_vimrc
 " 新文件
-command E enew
+command E enew | pwd
 command S Startify
 
 "折叠代码中的 class、function 等代码块
@@ -282,7 +291,8 @@ endfunction
 "nnoremap gb :ls<CR>:buffer<Space>
 nnoremap <C-n> :bnext<CR>
 nnoremap <C-p> :bprevious<CR>
-nnoremap <C-X> :bdelete<CR>
+nnoremap <C-x> :bdelete<CR>
+nnoremap <S-x> :bdelete!<CR>
 
 " autowrite
 set autowrite
@@ -318,7 +328,7 @@ if has('gui_running') && has('gui_win32') && has('libcall')
         call libcall(g:MyVimLib, 'ToggleFullScreen', 1)
     endfunction
 
-    let g:VimAlpha = 245
+    let g:VimAlpha = 240
     function! SetAlpha(alpha)
         let g:VimAlpha = g:VimAlpha + a:alpha
         if g:VimAlpha < 180
@@ -358,15 +368,23 @@ endif
 " }}}
 
 
+" lightline 的 bufferline 需要下列设置
+set showtabline=2
+if has('gui_running')
+    set guioptions-=e " Don’t use GUI tabline
+endif
+set laststatus=2  " Basic
+
 " lightline setup ==========================================================={{{
 let g:lightline = {}
 let g:lightline.active = {
     \ 'left': [ [ 'mode', 'paste' ],
     \           [ 'readonly', 'filename', 'modified' ],
     \           [ 'cocstatus'] ],
-    \ 'right': [ [ 'lineinfo' ],
-    \            [ 'percent' ],
-    \            [ 'fileformat', 'fileencoding', 'filetype' ] ] }
+    \ 'right': [ [ 'percent' ],
+    \            [ 'lineinfo' ],
+    \            [ 'fileformat', 'fileencoding', 'filetype' ],
+    \            [ 'gitstatus', 'blame' ] ] }
 let g:lightline.inactive = {
     \ 'left': [ [ 'filename' ] ],
     \ 'right': [ [ 'lineinfo' ],
@@ -390,30 +408,35 @@ let g:lightline.component_expand = {'buffers': 'lightline#bufferline#buffers'}
 let g:lightline.component_type   = {'buffers': 'tabsel'}
 
 let g:lightline.component_function = {
-    \   'cocstatus': 'coc#status'
+    \   'cocstatus': 'coc#status',
+    \   'gitstatus': 'LightlineGitStatus',
+    \   'blame': 'LightlineGitBlame',
     \ }
+
+function! LightlineGitStatus() abort
+  return get(b:, 'coc_git_status', '')
+endfunction
+
+function! LightlineGitBlame() abort
+  let blame = get(b:, 'coc_git_blame', '')
+  " return blame
+  return winwidth(0) > 120 ? blame : ''
+endfunction
+
 
 autocmd BufWritePost,TextChanged,TextChangedI * call lightline#update()
 autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
-
-" lightline 的 bufferline 需要下列设置
-set showtabline=2
-if has('gui_running')
-    set guioptions-=e " Don’t use GUI tabline
-endif
-set laststatus=2  " Basic
-
 " }}}
 
 
 " vim-go==================================================================={{{
 "
-"let g:go_def_mode='gopls'
-"let g:go_info_mode='gopls'
-let g:go_list_type = "quickfix"
-autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
-autocmd FileType go nmap <leader>b  <Plug>(go-build)
-autocmd FileType go nmap <leader>r  <Plug>(go-run)
+" let g:go_def_mode='gopls'
+" let g:go_info_mode='gopls'
+" let g:go_list_type = "quickfix"
+" autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
+" autocmd FileType go nmap <leader>b  <Plug>(go-build)
+" autocmd FileType go nmap <leader>r  <Plug>(go-run)
 "
 "}}}
 
@@ -559,7 +582,7 @@ inoremap <silent><expr> <CR> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
 " Markdown 文件禁用补全，打中文稍快就出错
-autocmd FileType markdown let b:coc_suggest_disable = 1
+"autocmd FileType markdown let b:coc_suggest_disable = 1
 
 "}}}
 "
@@ -732,7 +755,7 @@ autocmd FileType help nmap <CR>  <C-]>
 autocmd FileType help nmap <BS>  <C-o>
 
 " 默认启用 wellle/context 上下文插件
-let g:context_enabled = 1
+let g:context_enabled = 0
 
 " python 和 go 文件才使用缩进, json 文件中会不显示引号很烦人
 let g:indentLine_fileType = ['python', 'go']
@@ -742,3 +765,23 @@ let g:indentLine_setColors = 1
 " vimwiki 快捷键
 nmap <Leader>wk <Plug>VimwikiIndex
 autocmd FileType vimwiki nmap <Space> <Plug>VimwikiToggleListItem
+
+" easymotion
+nmap ss <Plug>(easymotion-bd-f2)
+nmap sa <Plug>(easymotion-jumptoanywhere)
+
+nmap sl <Plug>(easymotion-bd-wl)
+nmap si <Plug>(easymotion-bd-fl)
+nmap sp :PYSearch<cr>
+
+nmap sj <Plug>(easymotion-j)
+nmap sk <Plug>(easymotion-k)
+
+" 和系统公用剪贴板
+set clipboard=unnamed 
+
+" vim-auto-save
+let g:auto_save = 0  " enable AutoSave on Vim startup
+let g:auto_save_no_updatetime = 1  " do not change the 'updatetime' option
+let g:auto_save_in_insert_mode = 0  " do not save while in insert mode
+" let g:auto_save_silent = 1  " do not display the auto

@@ -16,7 +16,10 @@ SetTitleMatchMode, Fast
 ; ================创建内存盘文件夹=================
 Run, %comspec% /c mkdir "z:\TEMP" "z:\Chrome" "z:\Download" "z:\FireFox" "z:\INetCache" "z:\360 Browser",,Hide
 
-; =====================快速查看、禁用、启用 IE 代理==============================
+; ===================== 路由 ==============================
+Route := "LAN"
+
+; ===================== 快速查看、禁用、启用 IE 代理 ==========================
 
 ; ------代理服务器--------
 ServerAddr := "127.0.0.1:1088"
@@ -80,6 +83,19 @@ F8::
 Run,rundll32.exe shell32.dll`, Control_RunDLL inetcpl.cpl`, `,4L
 Sleep,200
 Send !l
+return
+
+; ------快捷键更改路由，使用有线网卡还是无线网卡上网--------
+F9::
+if ( Route = "WLAN" ) {
+    Run, %comspec% /c route delete 0.0.0.0 mask 0.0.0.0 192.168.124.1 & route delete 10.63.160.1 mask 255.255.255.255 192.168.123.1 & route add 0.0.0.0 mask 0.0.0.0 192.168.123.1,,Hide
+    ; Menu, Tray, Tip, "LAN"
+    Route := "LAN"
+} else {
+    Run, %comspec% /c route delete 0.0.0.0 mask 0.0.0.0 192.168.123.1 & route add 10.63.160.1 mask 255.255.255.255 192.168.123.1 & route add 0.0.0.0 mask 0.0.0.0 192.168.124.1,,Hide
+    ; Menu, Tray, Tip, "Wireless"
+    Route := "WLAN"
+}
 return
 
 ; ========================按一次关闭显示器，连按两次系统睡眠===================
@@ -199,13 +215,16 @@ return
 ;^0:: toggleWin("")
 
 ; ---GoldenDict---
-;^i::^!+j
-
-; ---沙拉查词---
-;^i:: toggleWin(Saladict Dict Panel)
-
+^i::
+Send ^!+j
+IfWinActive, ahk_exe GoldenDict.exe
+{
+    Send {BackSpace}^v{Enter}
+}
+return
 
 #IfWinActive, ahk_exe GoldenDict.exe
+Send {BackSpace}^v{Enter}
 ; 使用单引号直接粘贴剪贴板内容查询
 ~':: Send {BackSpace}^v{Enter}
 ; 朗读发音
