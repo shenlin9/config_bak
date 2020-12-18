@@ -16,6 +16,9 @@ SetTitleMatchMode, Fast
 ; ================创建内存盘文件夹=================
 Run, %comspec% /c mkdir "z:\TEMP" "z:\Chrome" "z:\Download" "z:\FireFox" "z:\INetCache" "z:\360 Browser",,Hide
 
+; ================关闭蓝牙=================
+Run, %comspec% /c powershell -command D:\git-repo\config_bak\godkey\bluetooth.ps1 -BluetoothStatus Off,,Hide
+
 ; ===================== 路由 ==============================
 Route := "LAN"
 
@@ -219,12 +222,13 @@ return
 Send ^!+j
 IfWinActive, ahk_exe GoldenDict.exe
 {
+    Clipboard := StrReplace(Clipboard, "`r`n", A_Space)
+    Clipboard := StrReplace(Clipboard, "`n", A_Space)
     Send {BackSpace}^v{Enter}
 }
 return
 
 #IfWinActive, ahk_exe GoldenDict.exe
-Send {BackSpace}^v{Enter}
 ; 使用单引号直接粘贴剪贴板内容查询
 ~':: Send {BackSpace}^v{Enter}
 ; 朗读发音
@@ -287,6 +291,7 @@ Send {BackSpace}^v{Enter}
 or WinActive("ahk_class TTOTAL_CMD")
 or WinActive("ahk_class Chrome_WidgetWin_1")
 or WinActive("ahk_class MozillaWindowClass")
+or WinActive("ahk_class ahk_class AcrobatSDIWindow")
     +j::Send, {Control Down}{Shift Down}{Tab}{Shift Up}{Ctrl Up}
     +k::Send, {Control Down}{Tab}{Ctrl Up}
 #IfWinActive
