@@ -34,7 +34,7 @@ call plug#begin()
 "  Plug 'roxma/nvim-yarp'
 "  Plug 'roxma/vim-hug-neovim-rpc'
 "endif
-
+"
 " 开始界面
 Plug 'mhinz/vim-startify'
 
@@ -227,9 +227,10 @@ set fo+=M
 set fo+=n
 set fo+=j
 
-"复制粘贴
+" 复制到系统剪贴板
 nmap <C-Insert> ^v$h"*y
 imap <C-Insert> <Esc>"*yyi
+vmap <C-Insert> "*y
 
 "visual模式下按 * 直接搜索选中的字符，
 "但有个bug未处理，就是被搜索字符中不能包含 /
@@ -351,7 +352,7 @@ if has('gui_running') && has('gui_win32') && has('libcall')
     endfunction
 
     " 映射 shift+Enter 切换全屏vim
-    map <s-enter> <esc>:call ToggleFullScreen()<cr>
+    "map <s-enter> <esc>:call ToggleFullScreen()<cr>
     " 切换Vim是否在最前面显示
     "nmap <s-r> <esc>:call SwitchVimTopMostMode()<cr>
     " 增加Vim窗体的不透明度
@@ -360,7 +361,7 @@ if has('gui_running') && has('gui_win32') && has('libcall')
     "nmap <s-y> <esc>:call SetAlpha(-10)<cr>
 
     " 默认设置透明
-    autocmd GUIEnter * call libcallnr(g:MyVimLib, 'SetAlpha', g:VimAlpha)
+    "autocmd GUIEnter * call libcallnr(g:MyVimLib, 'SetAlpha', g:VimAlpha)
     " 默认全屏
     "autocmd GUIEnter * call libcallnr(g:MyVimLib, 'ToggleFullScreen', 1)
 endif
@@ -583,6 +584,7 @@ autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
 " Markdown 文件禁用补全，打中文稍快就出错
 autocmd FileType markdown let b:coc_suggest_disable = 1
+autocmd FileType vimwiki let b:coc_suggest_disable = 1
 
 "}}}
 "
@@ -778,7 +780,7 @@ nmap sj <Plug>(easymotion-j)
 nmap sk <Plug>(easymotion-k)
 
 " 和系统公用剪贴板
-set clipboard=unnamed 
+"set clipboard=unnamed 
 
 " vim-auto-save
 let g:auto_save = 0  " enable AutoSave on Vim startup
@@ -803,7 +805,8 @@ nmap <Leader>' ysiW'
 vmap ' S'
 
 nmap <Leader>" ysiW"
-vmap " S"
+" 快捷键使用一个分号，则和默认的访问系统剪切板冲突，和 ctrl + insert 快捷键冲突
+vmap "" S"
 
 nmap <Leader>( ysiW(
 vmap ( S(

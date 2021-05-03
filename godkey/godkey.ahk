@@ -13,23 +13,91 @@ SetTitleMatchMode, Fast
 ;  + Shift 
 ;  ~ 前缀，不屏蔽热键本身的功能
 
+; ===============================移动窗口=======================================
+
+#If WinActive("ahk_exe Everything.exe")
+or WinActive("ahk_exe eudic.exe")
+or WinActive("ahk_class Notepad")
+    ^k::moveWindow("Up")
+    ^j::moveWindow("Down")
+    ^h::moveWindow("Left")
+    ^l::moveWindow("Right")
+#IfWinActive
+
+; ======================按键重映射==========================
+
+; ---Ctrl + Capslock 触发大写---
+^Capslock::Capslock
+
+; ---Capslock 映射为　ESC---
+Capslock::ESC
+
+; ---RControl, RAlt  互换---
+;RControl::RAlt
+;RAlt::RControl
+
+;调用 listary
+RWin::^+=
+AppsKey::^+=
+
+; --左 Ctrl+单引号映射为 Alt+Tab
+<^'::!Tab
+
+; --左 Ctrl+分号映射为 Alt+ESC
+<^;::!ESC
+
+; --- Navigation ---
+#If not WinActive("ahk_exe gvim.exe")
+    ; 使用 ctrl+n ctrl+p 映射选项卡切换键
+    ^p::Send, {Control Down}{Shift Down}{Tab}{Shift Up}{Ctrl Up}
+    ^n::Send, {Control Down}{Tab}{Ctrl Up}
+
+    ; 关闭选项卡
+    ;Capslock::^w
+
+    ; 使用 ctrl+j ctrl+k 代替上下方向键
+    ^j::Send {Down}
+    ^k::Send {Up}
+    ^h::Send {Left}
+    ^l::Send {Right}
+
+    ; 使用 ctrl+, ctrl+. 代替home, end键
+    ^,::Send {Home}
+    ^.::Send {End}
+#IfWinActive
+
+; ================退出时关闭蓝牙、静音=================
+OnExit("ExitFunc")
+
+ExitFunc(ExitReason, ExitCode)
+{
+    if ExitReason in Logoff,Shutdown
+    {
+        Run, %comspec% /c powershell -command D:\git-repo\config_bak\godkey\bluetooth.ps1 -BluetoothStatus Off,,Hide
+        Send,{Volume_Mute}
+        return 0  ; OnExit 函数返回非零值则不退出.
+    }
+    ; 不要调用 ExitApp -- 那会阻止其他 OnExit 函数被调用.
+}
+
 ; ================创建内存盘文件夹=================
 Run, %comspec% /c mkdir "z:\TEMP" "z:\Chrome" "z:\Download" "z:\FireFox" "z:\INetCache" "z:\360 Browser",,Hide
 
 ; ================关闭蓝牙=================
-Run, %comspec% /c powershell -command D:\git-repo\config_bak\godkey\bluetooth.ps1 -BluetoothStatus Off,,Hide
+;Sleep, 500
+;Run, %comspec% /c powershell -command D:\git-repo\config_bak\godkey\bluetooth.ps1 -BluetoothStatus Off,,Hide
 
-; ===================== 路由 ==============================
-Route := "LAN"
+; ================静音=================
+;Send,{Volume_Mute}
 
 ; ===================== 快速查看、禁用、启用 IE 代理 ==========================
 
 ; ------代理服务器--------
-ServerAddr := "127.0.0.1:1088"
+Sleep, 500
 UpdateIconLight()
 
 ; ------定期读取代理状态--------
-SetTimer, UpdateIconLight, 5000
+;SetTimer, UpdateIconLight, 5000
 
 ; ------根据当前代理状态更改托盘图标和ScrollLock键灯光--------
 UpdateIconLight() {
@@ -73,7 +141,7 @@ KeyWait, ScrollLock
 GetKeyState, ScrollLockState, ScrollLock, T
 If ScrollLockState = D
 {
-    SetProxy(ServerAddr)
+    SetProxy("127.0.0.1:1088")
     SetTrayIcon(true)
 } else {
     SetProxy("")
@@ -89,6 +157,8 @@ Send !l
 return
 
 ; ------快捷键更改路由，使用有线网卡还是无线网卡上网--------
+Route := "LAN"
+
 F9::
 if ( Route = "WLAN" ) {
     Run, %comspec% /c route delete 0.0.0.0 mask 0.0.0.0 192.168.124.1 & route delete 10.63.160.1 mask 255.255.255.255 192.168.123.1 & route add 0.0.0.0 mask 0.0.0.0 192.168.123.1,,Hide
@@ -131,25 +201,6 @@ else if winc_presses >= 2 ;  此键按下至少2次.
 winc_presses = 0
 return
 
-; ======================按键重映射==========================
-
-; ---Capslock和ESC互换---
-Capslock::ESC
-ESC::Capslock
-
-;调用 listary
-RWin::^+=
-
-; --左 Ctrl+单引号映射为 Alt+Tab
-<^'::AltTab
-
-; --左 Ctrl+分号映射为 Alt+ESC
-<^;::!ESC
-
-; 使用 ctrl+j ctrl+k 代替上下方向键
-; 直接映射为 Up，Down 失败，这种方式可以
-^j::Send {Down}
-^k::Send {Up}
 
 ; ======================TotalCmd==========================
 
@@ -158,9 +209,6 @@ RWin::^+=
     ^l::MouseClick, right
     ; 查看属性
     ^.::send !{Enter}
-    ; 直接映射为 Up，Down 失败，这种方式可以
-    ^j::Send {Down}
-    ^k::Send {Up}
 #IfWinActive
 
 ; ======================PotPlayer截屏快捷键==========================
@@ -169,10 +217,7 @@ RWin::^+=
     ,::^!e
 #IfWinActive
 
-; ======================隐藏显示窗口==========================
-
-; ---Chromium---
-^h:: toggleWin("Google Chrome")
+; ======================鼠标快捷键==========================
 
 #If WinActive("ahk_class Chrome_WidgetWin_1")
 or WinActive("ahk_class MozillaWindowClass")
@@ -180,63 +225,52 @@ or WinActive("ahk_class MozillaWindowClass")
     ;XButton2::msgbox,5
 #IfWinActive
 
-; ---Everything---
-^1::^!0
+; ===============================数字快捷键=====================================
 
-; ---firefox, Tor---
-^2::
-toggleWin("Mozilla Firefox") 
-toggleWin("Tor Browser")
-return
+;--- xxx ---
+;^1:: toggleWin("")
+
+;--- xxx ---
+;^2:: toggleWin("")
 
 ; --- Video Editor ---
-^3::
-toggleWin("ahk_class VIDEOEDITOR")
-toggleWin("TechSmith Camtasia")
-toggleWin("ahk_class Premiere Pro")
-return
+;^3:: toggleWin("")
 
-;---Total Commander---
-^4:: toggleWin("ahk_class TTOTAL_CMD")
+;--- xxx ---
+;^4:: toggleWin("")
 
 ;--- xxx ---
 ;^5:: toggleWin("")
 
-;--- xxx ---
-;^6:: toggleWin("")
+; ---Everything---
+^6::^!0
+
+;---Total Commander---
+^7:: toggleWin("ahk_class TTOTAL_CMD")
+
+; ---Photoshop---
+^8:: toggleWin("ahk_class Photoshop")
 
 ;--- xxx ---
-;^7:: toggleWin("")
-
-;--- xxx ---
-;^8:: toggleWin("")
-
-;--- xxx ---
-;^9:: toggleWin("")
+;^9::
+;toggleWin("ahk_class VIDEOEDITOR")
+;toggleWin("TechSmith Camtasia")
+;toggleWin("ahk_class Premiere Pro")
+;return
 
 ;--- xxx ---
 ;^0:: toggleWin("")
 
-; ---GoldenDict---
-^i::
-Send ^!+j
-IfWinActive, ahk_exe GoldenDict.exe
-{
-    Clipboard := StrReplace(Clipboard, "`r`n", A_Space)
-    Clipboard := StrReplace(Clipboard, "`n", A_Space)
-    Send {BackSpace}^v{Enter}
-}
-return
+; ===============================字母快捷键=====================================
 
-#IfWinActive, ahk_exe GoldenDict.exe
-; 使用单引号直接粘贴剪贴板内容查询
-~':: Send {BackSpace}^v{Enter}
-; 朗读发音
-/::!s
-; 滚动条
-,::PgUp
-.::PgDn
-#IfWinActive
+; ---Chromium---
+^o:: toggleWin("Google Chrome")
+
+; ---firefox, Tor---
+^u::
+toggleWin("Mozilla Firefox") 
+toggleWin("Tor") 
+return
 
 ; 隐藏任务栏
 ;^-:: toggleWin("ahk_class Shell_TrayWnd")
@@ -247,9 +281,57 @@ return
 ; ---ChinaDNS---
 ;^\:: toggleWin("dnsrelay.exe")
 
+; ---蓝牙---
+^\:: Run, %comspec% /c powershell -command D:\git-repo\config_bak\godkey\bluetooth.ps1 -BluetoothStatus On,,Hide
+
 ; 退出脚本
 ;~lbutton & enter::
 ;exitapp
+
+
+; ===============================欧陆词典=====================================
+
+^i::
+Send ^!j
+IfWinActive, ahk_exe eudic.exe
+{
+    Clipboard := StrReplace(Clipboard, "`r`n", A_Space)
+    Clipboard := StrReplace(Clipboard, "`n", A_Space)
+    Send {BackSpace}^v{Enter}
+}
+return
+
+#IfWinActive, ahk_exe eudic.exe
+; 使用单引号直接粘贴剪贴板内容查询
+':: Send {BackSpace}^v{Enter}
+; 朗读发音
+/::^!s
+; 滚动条
+,::PgUp
+.::PgDn
+#IfWinActive
+
+; ===============================GoldenDict=====================================
+
+;^i::
+;Send ^!+j
+;IfWinActive, ahk_exe GoldenDict.exe
+;{
+;    Clipboard := StrReplace(Clipboard, "`r`n", A_Space)
+;    Clipboard := StrReplace(Clipboard, "`n", A_Space)
+;    Send {BackSpace}^v{Enter}
+;}
+;return
+
+;#IfWinActive, ahk_exe GoldenDict.exe
+;; 使用单引号直接粘贴剪贴板内容查询
+;~':: Send {BackSpace}^v{Enter}
+;; 朗读发音
+;/::!s
+;; 滚动条
+;,::PgUp
+;.::PgDn
+;#IfWinActive
 
 ; ===============================有道词典=====================================
 
@@ -257,57 +339,41 @@ return
 ;^i::^!x
 
 ; ---有道词典标准窗口活动时下列快捷键有效---
-#IfWinActive, ahk_class YodaoMainWndClass
-    ^p::^v
-    /::^!v
-    ,::^Left
-    .::^Right
-
-    ; 移动单词查询内容窗口
-    ;WinMove, ahk_class YdMiniCefWnd, , x, y + Height
-#IfWinActive
+;#IfWinActive, ahk_class YodaoMainWndClass
+;    ^p::^v
+;    /::^!v
+;    ,::^Left
+;    .::^Right
+;#IfWinActive
 
 ; ---有道词典划词窗口活动时下列快捷键有效---
-#IfWinActive, YoudaoStrokeWnd
+;#IfWinActive, YoudaoStrokeWnd
     ; ---加入/删除生词本---
-    d::^!s
-#IfWinActive
+    ;d::^!s
+;#IfWinActive
 
 ; ===============================沙拉查词=======================================
 
-#IfWinActive, ahk_class Chrome_WidgetWin_1
-    Capslock::^w
+;#IfWinActive, ahk_class Chrome_WidgetWin_1
+    ;Capslock::^w
     ;WinGetTitle, Title, A
     ;; 中文"沙拉查词"提示非法字符
     ;if ("沙拉查词" in %Title%) {
     ;    msgbox,aaa
     ;    Send, ^w
     ;}
-#IfWinActive
+;#IfWinActive
 
-; ===============================移动窗口=======================================
+; ===============================切换Tab=======================================
 
-#If WinActive("ahk_class ATLWIN_JISUPDF_MIAN")
-or WinActive("ahk_class TTOTAL_CMD")
-or WinActive("ahk_class Chrome_WidgetWin_1")
-or WinActive("ahk_class MozillaWindowClass")
-or WinActive("ahk_class ahk_class AcrobatSDIWindow")
-    +j::Send, {Control Down}{Shift Down}{Tab}{Shift Up}{Ctrl Up}
-    +k::Send, {Control Down}{Tab}{Ctrl Up}
-#IfWinActive
-
-; ===============================移动窗口=======================================
-
-#If WinActive("ahk_exe Everything.exe")
-or WinActive("ahk_exe GoldenDict.exe")
-or WinActive("ahk_class YodaoMainWndClass")
-or WinActive("ahk_exe uTools.exe")
-or WinActive("Saladict Dict Panel")
-    ^k::moveWindow("Up")
-    ^j::moveWindow("Down")
-    ^h::moveWindow("Left")
-    ^l::moveWindow("Right")
-#IfWinActive
+;#If WinActive("ahk_class ATLWIN_JISUPDF_MIAN")
+;or WinActive("ahk_class TTOTAL_CMD")
+;or WinActive("ahk_class Chrome_WidgetWin_1")
+;or WinActive("ahk_class MozillaWindowClass")
+;or WinActive("ahk_class AcrobatSDIWindow")
+;    ^p::Send, {Control Down}{Shift Down}{Tab}{Shift Up}{Ctrl Up}
+;    ^n::Send, {Control Down}{Tab}{Ctrl Up}
+;#IfWinActive
 
 ; ===============================移动窗口函数===================================
 
@@ -402,7 +468,7 @@ existclass(class)
 }
 
 ;---遍历窗口----
-^9::show_all_win()
+;^9::show_all_win()
 
 show_all_win()
 {
