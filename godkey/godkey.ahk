@@ -13,6 +13,9 @@ SetTitleMatchMode, Fast
 ;  + Shift 
 ;  ~ 前缀，不屏蔽热键本身的功能
 
+; ================创建内存盘文件夹=================
+Run, %comspec% /c mkdir "z:\TEMP" "z:\Chrome" "z:\Download" "z:\FireFox" "z:\INetCache" "z:\360 Browser",,Hide
+
 ; ===============================移动窗口=======================================
 
 #If WinActive("ahk_exe Everything.exe")
@@ -45,6 +48,9 @@ AppsKey::^+=
 
 ; --左 Ctrl+分号映射为 Alt+ESC
 <^;::!ESC
+
+; --Alt+4 映射为 Alt+F4，方便关闭窗口
+!4::!F4
 
 ; --- Navigation ---
 #If not WinActive("ahk_exe gvim.exe")
@@ -79,9 +85,6 @@ ExitFunc(ExitReason, ExitCode)
     }
     ; 不要调用 ExitApp -- 那会阻止其他 OnExit 函数被调用.
 }
-
-; ================创建内存盘文件夹=================
-Run, %comspec% /c mkdir "z:\TEMP" "z:\Chrome" "z:\Download" "z:\FireFox" "z:\INetCache" "z:\360 Browser",,Hide
 
 ; ================关闭蓝牙=================
 ;Sleep, 500
@@ -157,19 +160,22 @@ Send !l
 return
 
 ; ------快捷键更改路由，使用有线网卡还是无线网卡上网--------
-Route := "LAN"
+;Route := "LAN"
+;
+;F9::
+;if ( Route = "WLAN" ) {
+;    Run, %comspec% /c route delete 0.0.0.0 mask 0.0.0.0 192.168.124.1 & route delete 10.63.160.1 mask 255.255.255.255 192.168.123.1 & route add 0.0.0.0 mask 0.0.0.0 192.168.123.1,,Hide
+;    ; Menu, Tray, Tip, "LAN"
+;    Route := "LAN"
+;} else {
+;    Run, %comspec% /c route delete 0.0.0.0 mask 0.0.0.0 192.168.123.1 & route add 10.63.160.1 mask 255.255.255.255 192.168.123.1 & route add 0.0.0.0 mask 0.0.0.0 192.168.124.1,,Hide
+;    ; Menu, Tray, Tip, "Wireless"
+;    Route := "WLAN"
+;}
+;return
 
-F9::
-if ( Route = "WLAN" ) {
-    Run, %comspec% /c route delete 0.0.0.0 mask 0.0.0.0 192.168.124.1 & route delete 10.63.160.1 mask 255.255.255.255 192.168.123.1 & route add 0.0.0.0 mask 0.0.0.0 192.168.123.1,,Hide
-    ; Menu, Tray, Tip, "LAN"
-    Route := "LAN"
-} else {
-    Run, %comspec% /c route delete 0.0.0.0 mask 0.0.0.0 192.168.123.1 & route add 10.63.160.1 mask 255.255.255.255 192.168.123.1 & route add 0.0.0.0 mask 0.0.0.0 192.168.124.1,,Hide
-    ; Menu, Tray, Tip, "Wireless"
-    Route := "WLAN"
-}
-return
+; ========================截屏快捷键替换为 Windows 截屏===================
+PrintScreen::#+s
 
 ; ========================按一次关闭显示器，连按两次系统睡眠===================
 Pause::
@@ -201,6 +207,17 @@ else if winc_presses >= 2 ;  此键按下至少2次.
 winc_presses = 0
 return
 
+; ========== Chrome,Firefox 浏览时使用 alt 键实现 ctrl 键的部分快捷功能========
+; ========== 主要是因为 alt 比 ctrl 好按
+
+#If WinActive("ahk_exe chrome.exe")
+or WinActive("ahk_class MozillaWindowClass")
+    !w::Send, {Control Down}{w}{Ctrl Up}
+    !t::Send, {Control Down}{t}{Ctrl Up}
+    !r::Send, {Control Down}{r}{Ctrl Up}
+    !c::Send, {Control Down}{c}{Ctrl Up}
+    !v::Send, {Control Down}{v}{Ctrl Up}
+#IfWinActive
 
 ; ======================TotalCmd==========================
 
@@ -252,11 +269,11 @@ or WinActive("ahk_class MozillaWindowClass")
 ^8:: toggleWin("ahk_class Photoshop")
 
 ;--- xxx ---
-;^9::
-;toggleWin("ahk_class VIDEOEDITOR")
+^9::
+toggleWin("ahk_class VIDEOEDITOR")
 ;toggleWin("TechSmith Camtasia")
 ;toggleWin("ahk_class Premiere Pro")
-;return
+return
 
 ;--- xxx ---
 ;^0:: toggleWin("")
@@ -410,7 +427,7 @@ moveWindow(Direct)
     return
 }
 
-; ===============================隐藏显示窗口===================================
+; ===============================隐藏显示窗口==================================
 
 toggleWin(win_title)
 {

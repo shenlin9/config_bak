@@ -74,7 +74,12 @@ Plug 'junegunn/vim-easy-align'
 Plug 'easymotion/vim-easymotion'
 
 " 括号、引号等自动配对
-Plug 'jiangmiao/auto-pairs'
+"Plug 'jiangmiao/auto-pairs'
+
+" 使得成对符号的操作更容易
+" Surround.vim is all about 'surroundings': parentheses, brackets, quotes, XML
+" tags, and more. The plugin provides mappings to easily delete, change and add
+" such surroundings in pairs.
 Plug 'tpope/vim-surround'
 
 " . 的增强版
